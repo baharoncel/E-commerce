@@ -1,0 +1,1316 @@
+{% extends 'base.html' %}
+{% load marketplace_tags %}
+
+{% block title %}Vitrin - PazarYeri{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Nested Categories Custom Styling */
+.nested-category-list {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+}
+
+.category-node {
+    margin-top: 0.25rem;
+}
+
+.category-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.category-row:hover {
+    background-color: #f3f3f3;
+}
+
+.category-link {
+    color: var(--text-primary) !important;
+    flex-grow: 1;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.category-node.level-1 > .category-row > .category-link {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.category-node.level-2 > .category-row > .category-link {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.category-node.level-3 > .category-row > .category-link {
+    font-weight: 500;
+    font-size: 0.8rem;
+    opacity: 0.85;
+}
+
+.category-node.active > .category-row > .category-link {
+    color: var(--secondary) !important;
+    font-weight: 700 !important;
+}
+
+.category-node.active > .category-row {
+    background-color: rgba(242, 122, 26, 0.05);
+}
+
+.toggle-submenu {
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.toggle-submenu:hover {
+    color: var(--primary);
+}
+
+.submenu {
+    display: none;
+    list-style: none;
+    padding-left: 1rem;
+    border-left: 1px dashed #e6e6e6;
+    margin-left: 0.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.category-node.expanded > .submenu {
+    display: block;
+}
+
+.category-node.expanded > .category-row > .toggle-submenu {
+    transform: rotate(90deg);
+    color: var(--primary);
+}
+
+/* Yatay Kategori Baloncukları (Trendyol / Story Tarzı) */
+.category-bubbles-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.5rem 0 1rem 0;
+    margin-bottom: 1rem;
+    scrollbar-width: none; /* Firefox */
+}
+
+.category-bubbles-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.category-bubbles-scroll {
+    display: flex;
+    gap: 1.25rem;
+    padding: 0.25rem;
+}
+
+.category-bubble-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 74px;
+    text-align: center;
+}
+
+.bubble-image-wrapper {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(45deg, #f27a1a, #e74c3c, #9b59b6, #3498db);
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(242, 122, 26, 0.22);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.bubble-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+
+.category-bubble-item span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 0.45rem;
+    transition: color 0.2s ease;
+}
+
+.category-bubble-item:hover .bubble-image-wrapper {
+    transform: scale(1.1) rotate(4deg);
+    box-shadow: 0 8px 22px rgba(242, 122, 26, 0.4);
+}
+
+.category-bubble-item:hover span {
+    color: var(--primary);
+}
+
+.category-bubble-item.active .bubble-image-wrapper {
+    background: linear-gradient(45deg, #f27a1a, #ff9f43);
+    box-shadow: 0 0 0 3px rgba(242, 122, 26, 0.3);
+}
+
+.category-bubble-item.active span {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.hover-lift {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease !important;
+}
+.hover-lift:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.09) !important;
+}
+
+.hero-banner {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffe7d2 100%);
+    border: 1px solid #ffe2c6;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.hero-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f3e3d9;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.secondhand-section {
+    background: linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #7c3aed 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 24px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    color: #ffffff;
+    box-shadow: 0 12px 36px rgba(124, 58, 237, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+.secondhand-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.secondhand-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.secondhand-badge-tag {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #000000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.secondhand-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0.5rem 0 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.secondhand-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+.secondhand-pills {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+.secondhand-pill-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.secondhand-pill-btn:hover, .secondhand-pill-btn.active {
+    background: #ffffff;
+    color: #4c1d95;
+    border-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+.secondhand-product-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+}
+.secondhand-product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25);
+    border-color: #fbbf24;
+}
+.secondhand-condition-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    background: rgba(16, 185, 129, 0.9);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.trendy-product-card {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+}
+
+.trendy-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+    font-weight: 700;
+    padding: 0.28rem 0.55rem;
+    border-radius: 999px;
+}
+
+.product-price {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--secondary);
+}
+
+@media (max-width: 768px) {
+    .hero-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner" style="border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color);">
+    <!-- Slide 1 -->
+    <div class="carousel-item active" style="height: 320px; background: linear-gradient(135deg, #fff7ed 0%, #ffe7d2 100%);">
+        <div class="d-flex align-items-center justify-content-between h-100 px-5 text-dark">
+            <div class="slider-content">
+                <span class="badge bg-danger mb-2 text-uppercase fw-bold" style="letter-spacing: 0.1em; font-size: 0.75rem;">Yaz Fırsatları</span>
+                <h1 class="display-6 fw-bold mb-2 text-gradient">Kıyafet & Moda Dünyası</h1>
+                <p class="lead mb-4 text-muted" style="font-size: 0.95rem;">En popüler markaların kıyafetlerini tek sepette güvenle birleştirin.</p>
+                <a href="?category=giyim" class="btn btn-primary btn-sm py-2 px-4 rounded-pill">Alışverişe Başla</a>
+            </div>
+            <div class="slider-graphics d-none d-md-block" style="font-size: 8rem; color: var(--primary); opacity: 0.85;">
+                <i class="fa-solid fa-shirt"></i>
+            </div>
+        </div>
+    </div>
+    <!-- Slide 2 -->
+    <div class="carousel-item" style="height: 320px; background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
+        <div class="d-flex align-items-center justify-content-between h-100 px-5 text-dark">
+            <div class="slider-content">
+                <span class="badge bg-info mb-2 text-uppercase fw-bold text-white" style="letter-spacing: 0.1em; font-size: 0.75rem;">Yeni Sezon</span>
+                <h1 class="display-6 fw-bold mb-2" style="background: linear-gradient(135deg, #0284c7, #0369a1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Işıldayan Takı & Aksesuar</h1>
+                <p class="lead mb-4 text-muted" style="font-size: 0.95rem;">Tarzınıza ışıltı katacak takı ve aksesuar modellerini keşfedin.</p>
+                <a href="?category=taki" class="btn btn-info text-white btn-sm py-2 px-4 rounded-pill">Koleksiyonu Gör</a>
+            </div>
+            <div class="slider-graphics d-none d-md-block" style="font-size: 8rem; color: #0284c7; opacity: 0.85;">
+                <i class="fa-solid fa-gem"></i>
+            </div>
+        </div>
+    </div>
+    <!-- Slide 3 -->
+    <div class="carousel-item" style="height: 320px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+        <div class="d-flex align-items-center justify-content-between h-100 px-5 text-dark">
+            <div class="slider-content">
+                <span class="badge bg-success mb-2 text-uppercase fw-bold" style="letter-spacing: 0.1em; font-size: 0.75rem;">Organik & Doğal</span>
+                <h1 class="display-6 fw-bold mb-2" style="background: linear-gradient(135deg, #16a34a, #15803d); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Kozmetik & Kişisel Bakım</h1>
+                <p class="lead mb-4 text-muted" style="font-size: 0.95rem;">Cildinizi besleyen en doğal kozmetik ve kişisel bakım ürünleri.</p>
+                <a href="?category=kozmetik" class="btn btn-success btn-sm py-2 px-4 rounded-pill">Fırsatları Yakala</a>
+            </div>
+            <div class="slider-graphics d-none d-md-block" style="font-size: 8rem; color: #16a34a; opacity: 0.85;">
+                <i class="fa-solid fa-flask"></i>
+            </div>
+        </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1);"></span>
+    <span class="visually-hidden">Geri</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1);"></span>
+    <span class="visually-hidden">İleri</span>
+  </button>
+</div>
+
+{% if flash_sales %}
+<div class="flash-sales-banner my-4" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border-radius: 20px; padding: 1.5rem; color: #fff; box-shadow: 0 12px 30px rgba(67, 56, 202, 0.3); position: relative; overflow: hidden;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="background: #ef4444; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); animation: pulse 1.5s infinite;">
+                <i class="fa-solid fa-bolt-lightning text-white fs-4"></i>
+            </div>
+            <div>
+                <h3 style="font-size: 1.35rem; font-weight: 800; color: #fff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    Flaş İndirimler & Süreli Fırsatlar
+                </h3>
+                <p style="font-size: 0.82rem; color: rgba(255,255,255,0.8); margin: 0;">Sınırlı süre geçerli dev indirimleri kaçırmayın!</p>
+            </div>
+        </div>
+        
+        <!-- Canlı Geri Sayım Sayacı -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); padding: 0.5rem 1rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);">
+            <i class="fa-solid fa-stopwatch text-warning fs-5"></i>
+            <span style="font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.9);">Kalan Süre:</span>
+            <div id="flashCountdownBox" style="font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: 900; color: #f59e0b; letter-spacing: 1px;">
+                00:00:00
+            </div>
+        </div>
+    </div>
+
+    <!-- Flaş İndirimli Ürünler Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+        {% for flash in flash_sales %}
+            <div class="flash-card" style="background: #ffffff; border-radius: 16px; padding: 1rem; color: #1e293b; position: relative; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <span class="badge" style="position: absolute; top: 12px; left: 12px; z-index: 10; background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; font-weight: 800; font-size: 0.78rem; padding: 0.35rem 0.65rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(239,68,68,0.35);">
+                    -%{{ flash.discount_percent|floatformat:0 }} İNDİRİM
+                </span>
+
+                <div style="height: 160px; background: #f8fafc; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+                    {% if flash.product.image %}
+                        <img src="{{ flash.product.image_url }}" alt="{{ flash.product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <i class="fa-solid fa-box-open text-muted fs-1"></i>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;"><i class="fa-solid fa-store text-primary"></i> {{ flash.product.seller.store_name }}</div>
+                    <h4 style="font-size: 0.92rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0 0.5rem 0; line-height: 1.3; min-height: 2.4rem;">{{ flash.product.title }}</h4>
+                    
+                    <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <span style="font-size: 1.2rem; font-weight: 800; color: #dc2626;">{{ flash.get_flash_price|convert_price:request }}</span>
+                        <span style="font-size: 0.85rem; color: #94a3b8; text-decoration: line-through;">{{ flash.product.base_price|convert_price:request }}</span>
+                    </div>
+
+                    {% with first_variant=flash.product.variants.first %}
+                        <a href="{% url 'product_detail' flash.product.id %}" class="btn btn-warning btn-sm w-100 font-weight-bold py-2 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; font-size: 0.82rem;">
+                            <i class="fa-solid fa-bolt"></i> Fırsatı Yakala
+                        </a>
+                    {% endwith %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // En yakın bitiş süresine göre canlı geri sayım
+        var flashEndTime = new Date("{% if flash_sales %}{{ flash_sales.first.end_time|date:'c' }}{% else %}2026-12-31T23:59:59{% endif %}").getTime();
+        
+        function updateFlashTimer() {
+            var now = new Date().getTime();
+            var distance = flashEndTime - now;
+            
+            if (distance < 0) {
+                document.getElementById("flashCountdownBox").innerHTML = "KAMPANYA BİTTİ";
+                return;
+            }
+            
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            
+            var timerElement = document.getElementById("flashCountdownBox");
+            if (timerElement) {
+                timerElement.innerHTML = hours + ":" + minutes + ":" + seconds;
+            }
+        }
+        
+        updateFlashTimer();
+        setInterval(updateFlashTimer, 1000);
+    });
+</script>
+{% endif %}
+
+<div class="grid-sidebar">
+    <!-- Sidebar Filters -->
+    <aside>
+        <div class="card" style="padding: 1.25rem; background-color: #ffffff; border: 1px solid #e6e6e6; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
+            <form id="filterForm" class="filter-form">
+                <input type="hidden" name="q" value="{{ search_query|default:'' }}">
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2;">
+                    <div class="category-header-toggle" id="category-sidebar-toggle" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; margin-bottom: 0.75rem;">
+                        <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fa-solid fa-bars" style="color: var(--primary);"></i> Kategoriler
+                        </h4>
+                        <i class="fa-solid fa-chevron-down" id="category-sidebar-arrow" style="font-size: 0.8rem; color: #666; transition: transform 0.3s ease;"></i>
+                    </div>
+                    <div id="category-sidebar-content" style="transition: max-height 0.3s ease; overflow: hidden; display: block;">
+                        <input type="hidden" name="category_ids" id="selectedCategoryIdInput" value="{% if selected_category_ids %}{{ selected_category_ids.0 }}{% endif %}">
+                        <ul id="category-sidebar-list" class="filter-list nested-category-list" style="margin-top: 0.5rem; max-height: 450px; overflow-y: auto; padding-right: 0.25rem;">
+                            <li class="filter-item category-item-clickable {% if not selected_category and not selected_category_ids %}active{% endif %}" data-cat-id="">
+                                <div class="category-row">
+                                    <span class="category-link" style="display: flex; align-items: center; gap: 0.5rem; margin: 0; cursor: pointer; width: 100%;">
+                                        <span>Tüm Kategoriler</span>
+                                    </span>
+                                </div>
+                            </li>
+                            {% for cat in categories %}
+                                <li class="category-node level-1 category-item-clickable {% if selected_category == cat.slug or cat.id in selected_category_ids %}active{% endif %}" data-cat-id="{{ cat.id }}" data-slug="{{ cat.slug }}">
+                                    <div class="category-row">
+                                        <span class="category-link" style="display: flex; align-items: center; gap: 0.5rem; margin: 0; cursor: pointer; flex-grow: 1;">
+                                            <span>{{ cat.name }}</span>
+                                        </span>
+                                        {% if cat.subcategories.exists %}
+                                            <span class="toggle-submenu"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i></span>
+                                        {% endif %}
+                                    </div>
+                                    {% if cat.subcategories.exists %}
+                                        <ul class="submenu level-2-list">
+                                            {% for subcat in cat.subcategories.all %}
+                                                <li class="category-node level-2 category-item-clickable {% if selected_category == subcat.slug or subcat.id in selected_category_ids %}active{% endif %}" data-cat-id="{{ subcat.id }}" data-slug="{{ subcat.slug }}">
+                                                    <div class="category-row">
+                                                        <span class="category-link" style="display: flex; align-items: center; gap: 0.5rem; margin: 0; cursor: pointer;">
+                                                            <span>{{ subcat.name }}</span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2; padding-bottom: 1.5rem;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-coins" style="color: var(--primary);"></i> Fiyat Aralığı</h4>
+                    
+                    <!-- Dual Range Slider Container -->
+                    <div class="price-slider-wrapper" style="position: relative; height: 35px; margin-bottom: 0.5rem;">
+                        <div class="price-slider-track" style="position: absolute; width: 100%; height: 5px; background: #e2e8f0; border-radius: 5px; top: 15px; z-index: 1;"></div>
+                        <div class="price-slider-range" id="priceSliderRange" style="position: absolute; height: 5px; background: var(--primary); border-radius: 5px; top: 15px; z-index: 2; left: 0%; right: 0%;"></div>
+                        
+                        <input type="range" class="min-price-slider" id="minPriceSlider" min="0" max="10000" step="50" value="{{ min_price|default:0 }}" style="position: absolute; width: 100%; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; top: 8px; z-index: 3;">
+                        <input type="range" class="max-price-slider" id="maxPriceSlider" min="0" max="10000" step="50" value="{{ max_price|default:10000 }}" style="position: absolute; width: 100%; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; top: 8px; z-index: 4;">
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center gap-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border" style="font-size: 0.75rem; padding: 0.25rem 0.4rem;">Min</span>
+                            <input type="number" id="minPriceInput" name="min_price" class="form-control form-control-sm" placeholder="0" value="{{ min_price|default:'' }}" style="font-size: 0.8rem; padding: 0.25rem 0.4rem;">
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border" style="font-size: 0.75rem; padding: 0.25rem 0.4rem;">Max</span>
+                            <input type="number" id="maxPriceInput" name="max_price" class="form-control form-control-sm" placeholder="10000" value="{{ max_price|default:'' }}" style="font-size: 0.8rem; padding: 0.25rem 0.4rem;">
+                        </div>
+                    </div>
+                </div>
+
+                {% if available_colors %}
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2; padding-bottom: 1.25rem;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 0.75rem;"><i class="fa-solid fa-palette" style="color: var(--primary);"></i> Renkler</h4>
+                    <div class="d-flex flex-wrap gap-2" style="max-height: 140px; overflow-y: auto;">
+                        {% for color in available_colors %}
+                            <label class="color-filter-btn m-0" style="cursor: pointer;">
+                                <input type="checkbox" name="colors" value="{{ color }}" class="d-none filter-checkbox" {% if color in selected_colors %}checked{% endif %}>
+                                <span class="badge rounded-pill px-3 py-2 border filter-pill-option {% if color in selected_colors %}bg-dark text-white border-dark{% else %}bg-light text-dark border-secondary-subtle{% endif %}" style="font-size: 0.78rem;">
+                                    {{ color }}
+                                </span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if available_sizes %}
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2; padding-bottom: 1.25rem;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 0.75rem;"><i class="fa-solid fa-ruler" style="color: var(--primary);"></i> Beden / Numara</h4>
+                    <div class="d-flex flex-wrap gap-2" style="max-height: 140px; overflow-y: auto;">
+                        {% for size in available_sizes %}
+                            <label class="size-filter-btn m-0" style="cursor: pointer;">
+                                <input type="checkbox" name="sizes" value="{{ size }}" class="d-none filter-checkbox" {% if size in selected_sizes %}checked{% endif %}>
+                                <span class="badge rounded-pill px-3 py-2 border filter-pill-option {% if size in selected_sizes %}bg-primary text-white border-primary{% else %}bg-light text-dark border-secondary-subtle{% endif %}" style="font-size: 0.78rem;">
+                                    {{ size }}
+                                </span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2; padding-bottom: 1rem;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 0.75rem;"><i class="fa-solid fa-tags" style="color: var(--primary);"></i> Fırsatlar & Stok</h4>
+                    
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input filter-checkbox" type="checkbox" name="in_stock" value="1" id="inStockCheck" {% if in_stock_only %}checked{% endif %}>
+                        <label class="form-check-label small fw-semibold text-dark" for="inStockCheck">Sadece Stokta Olanlar</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input filter-checkbox" type="checkbox" name="discounted" value="1" id="discountedCheck" {% if discounted_only %}checked{% endif %}>
+                        <label class="form-check-label small fw-semibold text-dark" for="discountedCheck">Sadece İndirimli Ürünler</label>
+                    </div>
+                </div>
+
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 0.75rem;"><i class="fa-solid fa-star" style="color: var(--primary);"></i> Min. Puan</h4>
+                    <select name="min_rating" class="form-select form-select-sm filter-select">
+                        <option value="">Seçiniz</option>
+                        <option value="4" {% if min_rating == '4' %}selected{% endif %}>4+</option>
+                        <option value="4.5" {% if min_rating == '4.5' %}selected{% endif %}>4.5+</option>
+                        <option value="5" {% if min_rating == '5' %}selected{% endif %}>5</option>
+                    </select>
+                </div>
+
+                <div class="filter-section" style="border-bottom: 1px solid #f2f2f2;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 0.75rem;"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Sıralama</h4>
+                    <select name="sort_by" class="form-select form-select-sm filter-select">
+                        <option value="newest" {% if sort_by == 'newest' or not sort_by %}selected{% endif %}>En Yeniler</option>
+                        <option value="popularity" {% if sort_by == 'popularity' %}selected{% endif %}>En Çok Satan & Popüler</option>
+                        <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Fiyat: Artan</option>
+                        <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Fiyat: Azalan</option>
+                        <option value="rating_desc" {% if sort_by == 'rating_desc' %}selected{% endif %}>En Yüksek Puan</option>
+                    </select>
+                </div>
+
+                <div class="filter-section" style="border-bottom: none; padding-bottom: 0;">
+                    <h4 style="font-size: 0.95rem; color: #333; font-weight: 700; margin-bottom: 0.75rem;"><i class="fa-solid fa-store" style="color: var(--primary);"></i> Satıcı Mağazalar</h4>
+                    <select name="seller_id" class="form-select form-select-sm filter-select">
+                        <option value="">Tüm Mağazalar</option>
+                        {% for seller in sellers %}
+                            <option value="{{ seller.id }}" {% if selected_seller == seller.id %}selected{% endif %}>{{ seller.store_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-top: 1.25rem; display: flex; gap: 0.5rem;">
+                    <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Filtrele</button>
+                    <a href="{% url 'store_index' %}" class="btn btn-outline btn-sm">Temizle</a>
+                </div>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Products Area -->
+    <main>
+        <!-- Yatay Kategori Baloncukları (Trendyol Tarzı) -->
+        <div class="category-bubbles-container">
+            <div class="category-bubbles-scroll">
+                {% for b in category_bubbles %}
+                    {% if b.id %}
+                        <div class="category-bubble-item {% if b.id in selected_category_ids %}active{% endif %}" data-category-id="{{ b.id }}" data-category-name="{{ b.name }}">
+                            <div class="bubble-image-wrapper">
+                                <img src="{{ b.image }}" alt="{{ b.name }}">
+                            </div>
+                            <span>{{ b.name }}</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Ürün Başlığı & Canlı Sonuç Sayacı -->
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Ürün Kataloğu</h5>
+            <span id="productCountBadge" class="badge bg-primary text-white rounded-pill px-3 py-2 fs-6 shadow-sm">
+                <i class="fa-solid fa-list-check me-1"></i> {{ products_count|default:0 }} Ürün Bulundu
+            </span>
+        </div>
+
+        <!-- Active Filters Tags Container -->
+        <div id="activeFiltersContainer" class="d-flex flex-wrap gap-2 mb-3">
+            <!-- Dynamically populated via JS -->
+        </div>
+
+        <div id="productGridContainer">
+            {% include 'storefront/partials/product_grid.html' %}
+        </div>
+
+        <!-- Trust Badges & Service Guarantees (Cam Efektli Hizmet Kartları) -->
+        <div class="row g-3 my-4">
+            <div class="col-6 col-md-3">
+                <div class="p-3 text-center rounded-4 border bg-white shadow-sm h-100 hover-lift" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); backdrop-filter: blur(10px);">
+                    <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">Hızlı & Aynı Gün Kargo</h6>
+                    <p class="text-muted small mb-0" style="font-size: 0.74rem;">Saat 16:00'ya kadar aynı gün kargoda</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 text-center rounded-4 border bg-white shadow-sm h-100 hover-lift" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); backdrop-filter: blur(10px);">
+                    <div class="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">%100 Orijinal Ürün</h6>
+                    <p class="text-muted small mb-0" style="font-size: 0.74rem;">Yetkili distribütör & marka garantili</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 text-center rounded-4 border bg-white shadow-sm h-100 hover-lift" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); backdrop-filter: blur(10px);">
+                    <div class="bg-warning-subtle text-warning-emphasis rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">14 Gün Kolay İade</h6>
+                    <p class="text-muted small mb-0" style="font-size: 0.74rem;">Sorgusuz & anında ücret iadesi</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 text-center rounded-4 border bg-white shadow-sm h-100 hover-lift" style="background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95)); backdrop-filter: blur(10px);">
+                    <div class="bg-info-subtle text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">256-Bit SSL Güvenlik</h6>
+                    <p class="text-muted small mb-0" style="font-size: 0.74rem;">Uluslararası korumalı güvenli ödeme</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<!-- Hızlı Bakış Modalı HTML -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg" style="border-radius: 16px; overflow: hidden; border: none; background-color: var(--bg-card); color: var(--text-primary);">
+            <div class="modal-header border-0 pb-0" style="position: absolute; right: 0; z-index: 10;">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat" style="background-color: #fff; padding: 0.75rem; border-radius: 50%; opacity: 0.8; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-md-6" id="qvProductImgCol" style="background-color: #f7f7f7; display: flex; align-items: center; justify-content: center; min-height: 350px; position: relative;">
+                        <div id="qvImgSpinner" class="spinner-border text-primary" role="status" style="position: absolute;">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                        </div>
+                        <img id="qvProductImg" src="" alt="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                    </div>
+                    <div class="col-md-6 p-4 d-flex flex-column justify-content-between">
+                        <div style="display: flex; flex-direction: column; flex-grow: 1;">
+                            <span class="badge bg-light text-muted mb-2 border rounded" id="qvSellerName" style="width: fit-content; font-size: 0.75rem; color: var(--text-secondary) !important;">Satıcı</span>
+                            <h2 class="h4 fw-bold mb-2 text-dark" id="qvProductTitle" style="letter-spacing: -0.02em; color: var(--text-primary) !important;">Ürün Başlığı</h2>
+                            <div class="h3 fw-extrabold text-primary mb-3" id="qvProductPrice">0.00 TL</div>
+                            <hr class="my-3" style="opacity: 0.1;">
+                            <p class="text-muted small mb-4" id="qvProductDesc" style="line-height: 1.6; max-height: 120px; overflow-y: auto;">Açıklama yükleniyor...</p>
+                            
+                            <form id="qvAddToCartForm" action="{% url 'add_to_cart' %}" method="post" class="m-0">
+                                {% csrf_token %}
+                                <div class="mb-3" id="qvColorsContainer" style="display:none;">
+                                    <label class="form-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Renk Seçiniz</label>
+                                    <div class="d-flex flex-wrap gap-2" id="qvColorsList"></div>
+                                </div>
+                                <div class="mb-4" id="qvSizesContainer" style="display:none;">
+                                    <label class="form-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Beden Seçiniz</label>
+                                    <div class="d-flex flex-wrap gap-2" id="qvSizesList"></div>
+                                </div>
+                                <input type="hidden" name="variant_id" id="qvSelectedVariantId" value="">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2" id="qvSubmitBtn" style="background: linear-gradient(135deg, var(--primary), #ff8c2e); border: none; border-radius: 10px; font-weight: 700;">
+                                    <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("Categories script initialized successfully!");
+
+        const filterForm = document.getElementById("filterForm");
+        const productGridContainer = document.getElementById("productGridContainer");
+        const productCountBadge = document.getElementById("productCountBadge");
+        const activeFiltersContainer = document.getElementById("activeFiltersContainer");
+        const selectedInput = document.getElementById("selectedCategoryIdInput");
+        let filterDebounceTimer = null;
+
+        const activeNode = document.querySelector(".category-node.active");
+        if (activeNode) {
+            let parentNode = activeNode.closest(".category-node");
+            while (parentNode) {
+                parentNode.classList.add("expanded");
+                const parentList = parentNode.parentElement.closest(".submenu");
+                if (parentList) {
+                    parentNode = parentList.closest(".category-node");
+                } else {
+                    parentNode = null;
+                }
+            }
+        }
+
+        document.querySelectorAll(".category-item-clickable").forEach(function(item) {
+            const link = item.querySelector(".category-link");
+            if (link) {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const catId = item.getAttribute("data-cat-id") || "";
+                    if (selectedInput) {
+                        selectedInput.value = catId;
+                    }
+
+                    document.querySelectorAll(".category-item-clickable, .category-node, .filter-item").forEach(el => el.classList.remove("active"));
+                    item.classList.add("active");
+
+                    if (item.classList.contains("category-node")) {
+                        item.classList.toggle("expanded");
+                    }
+
+                    syncCategoryBubbles();
+                    triggerFilterUpdate();
+                });
+            }
+        });
+
+        document.querySelectorAll(".toggle-submenu").forEach(function(btn) {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const node = btn.closest(".category-node");
+                if (node) {
+                    node.classList.toggle("expanded");
+                }
+            });
+        });
+
+        const sidebarToggle = document.getElementById("category-sidebar-toggle");
+        const sidebarContent = document.getElementById("category-sidebar-content");
+        const sidebarArrow = document.getElementById("category-sidebar-arrow");
+        
+        if (sidebarToggle && sidebarContent) {
+            sidebarContent.style.display = "block";
+            if (sidebarArrow) {
+                sidebarArrow.style.transform = "rotate(0deg)";
+            }
+            
+            sidebarToggle.addEventListener("click", function() {
+                if (sidebarContent.style.display === "none") {
+                    sidebarContent.style.display = "block";
+                    if (sidebarArrow) sidebarArrow.style.transform = "rotate(0deg)";
+                } else {
+                    sidebarContent.style.display = "none";
+                    if (sidebarArrow) sidebarArrow.style.transform = "rotate(-90deg)";
+                }
+            });
+        }
+
+        const sidebarList = document.getElementById("category-sidebar-list");
+        if (sidebarList) {
+            function restoreScroll() {
+                const scrollPos = sessionStorage.getItem("sidebar-scroll-pos");
+                if (scrollPos) {
+                    sidebarList.scrollTop = parseInt(scrollPos, 10);
+                } else {
+                    const activeItem = sidebarList.querySelector(".category-node.active") || sidebarList.querySelector(".filter-item.active");
+                    if (activeItem) {
+                        activeItem.scrollIntoView({ block: "nearest" });
+                    }
+                }
+            }
+
+            restoreScroll();
+            sidebarList.addEventListener("scroll", function() {
+                sessionStorage.setItem("sidebar-scroll-pos", sidebarList.scrollTop);
+            });
+        }
+
+        function syncCategoryBubbles() {
+            if (!selectedInput) return;
+            const currentCatId = selectedInput.value;
+            document.querySelectorAll('.category-bubble-item').forEach(bubble => {
+                const bubbleCatId = bubble.getAttribute('data-category-id') || "";
+                if ((!currentCatId && !bubbleCatId) || (currentCatId && bubbleCatId === currentCatId)) {
+                    bubble.classList.add('active');
+                } else {
+                    bubble.classList.remove('active');
+                }
+            });
+        }
+
+        // Kategori Baloncuklarına Tıklama Olayını Bağla (Baloncuğa basınca o kategoriyi süz)
+        document.querySelectorAll(".category-bubble-item").forEach(function(bubble) {
+            bubble.addEventListener("click", function(e) {
+                e.preventDefault();
+                const catId = bubble.getAttribute("data-category-id") || "";
+                if (selectedInput) {
+                    selectedInput.value = catId;
+                }
+                
+                document.querySelectorAll(".category-bubble-item").forEach(b => b.classList.remove("active"));
+                bubble.classList.add("active");
+
+                // Sol sidebar hiyerarşisini senkronize et
+                document.querySelectorAll(".category-item-clickable, .category-node, .filter-item").forEach(el => el.classList.remove("active"));
+                const targetNode = document.querySelector(`.category-node[data-cat-id="${catId}"], .category-item-clickable[data-cat-id="${catId}"]`);
+                if (targetNode) {
+                    targetNode.classList.add("active");
+                }
+
+                triggerFilterUpdate();
+            });
+        });
+
+        function updateActiveFilterPills() {
+            if (!activeFiltersContainer || !filterForm) return;
+            activeFiltersContainer.innerHTML = '';
+            let activeCount = 0;
+
+            const formData = new FormData(filterForm);
+
+            const catId = selectedInput ? selectedInput.value : '';
+            if (catId) {
+                activeCount++;
+                let catName = 'Kategori';
+                const activeCatNode = document.querySelector(`.category-node[data-cat-id="${catId}"]`);
+                if (activeCatNode) {
+                    const linkSpan = activeCatNode.querySelector('.category-link span');
+                    if (linkSpan) catName = linkSpan.textContent.trim();
+                }
+                addFilterPill(`Kategori: ${catName}`, function() {
+                    if (selectedInput) selectedInput.value = '';
+                    document.querySelectorAll('.category-node, .filter-item').forEach(el => el.classList.remove('active'));
+                    const allCatItem = document.querySelector('.filter-item[data-cat-id=""]');
+                    if (allCatItem) allCatItem.classList.add('active');
+                    syncCategoryBubbles();
+                    triggerFilterUpdate();
+                });
+            }
+
+            formData.getAll('colors').forEach(color => {
+                if (color) {
+                    activeCount++;
+                    addFilterPill(`Renk: ${color}`, function() {
+                        const cb = filterForm.querySelector(`input[name="colors"][value="${color}"]`);
+                        if (cb) { cb.checked = false; triggerFilterUpdate(); }
+                    });
+                }
+            });
+
+            formData.getAll('sizes').forEach(size => {
+                if (size) {
+                    activeCount++;
+                    addFilterPill(`Beden: ${size}`, function() {
+                        const cb = filterForm.querySelector(`input[name="sizes"][value="${size}"]`);
+                        if (cb) { cb.checked = false; triggerFilterUpdate(); }
+                    });
+                }
+            });
+
+            if (formData.get('in_stock') === '1') {
+                activeCount++;
+                addFilterPill('Sadece Stokta Olanlar', function() {
+                    const cb = document.getElementById('inStockCheck');
+                    if (cb) { cb.checked = false; triggerFilterUpdate(); }
+                });
+            }
+
+            if (formData.get('discounted') === '1') {
+                activeCount++;
+                addFilterPill('Sadece İndirimli Ürünler', function() {
+                    const cb = document.getElementById('discountedCheck');
+                    if (cb) { cb.checked = false; triggerFilterUpdate(); }
+                });
+            }
+
+            const minRating = formData.get('min_rating');
+            if (minRating) {
+                activeCount++;
+                addFilterPill(`Min ${minRating}+ Puan`, function() {
+                    const sel = filterForm.querySelector('select[name="min_rating"]');
+                    if (sel) { sel.value = ''; triggerFilterUpdate(); }
+                });
+            }
+
+            const minPrice = formData.get('min_price');
+            const maxPrice = formData.get('max_price');
+            if (minPrice || maxPrice) {
+                activeCount++;
+                const text = `Fiyat: ${minPrice || 0} TL - ${maxPrice || '∞'} TL`;
+                addFilterPill(text, function() {
+                    const minInput = document.getElementById('minPriceInput');
+                    const maxInput = document.getElementById('maxPriceInput');
+                    if (minInput) minInput.value = '';
+                    if (maxInput) maxInput.value = '';
+                    triggerFilterUpdate();
+                });
+            }
+
+            if (activeCount > 0) {
+                const clearAllBtn = document.createElement('a');
+                clearAllBtn.href = '{% url "store_index" %}';
+                clearAllBtn.className = 'btn btn-outline-danger btn-sm rounded-pill px-3 py-1 fw-bold';
+                clearAllBtn.style.fontSize = '0.75rem';
+                clearAllBtn.innerHTML = '<i class="fa-solid fa-trash me-1"></i> Tümünü Temizle';
+                activeFiltersContainer.appendChild(clearAllBtn);
+            }
+        }
+
+        function addFilterPill(text, onRemove) {
+            const pill = document.createElement('span');
+            pill.className = 'badge bg-light text-dark border px-3 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2';
+            pill.style.fontSize = '0.78rem';
+            pill.style.fontWeight = '600';
+            pill.innerHTML = `${text} <i class="fa-solid fa-xmark text-danger cursor-pointer ms-1"></i>`;
+            pill.querySelector('.fa-xmark').addEventListener('click', onRemove);
+            activeFiltersContainer.appendChild(pill);
+        }
+
+        function triggerFilterUpdate() {
+            clearTimeout(filterDebounceTimer);
+            filterDebounceTimer = setTimeout(function() {
+                if (!filterForm) return;
+
+                const formData = new FormData(filterForm);
+                const params = new URLSearchParams();
+
+                for (const [key, val] of formData.entries()) {
+                    if (val !== '' && val !== null) {
+                        params.append(key, val);
+                    }
+                }
+
+                const searchUrl = window.location.pathname + '?' + params.toString();
+                window.history.pushState({}, '', searchUrl);
+
+                if (productGridContainer) {
+                    productGridContainer.style.opacity = '0.5';
+                }
+
+                fetch(searchUrl, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (productGridContainer) {
+                        productGridContainer.innerHTML = data.html;
+                        productGridContainer.style.opacity = '1';
+                    }
+                    if (productCountBadge) {
+                        productCountBadge.innerHTML = `<i class="fa-solid fa-list-check me-1"></i> ${data.count} Ürün Bulundu`;
+                    }
+                    updateActiveFilterPills();
+                })
+                .catch(err => {
+                    console.error("Filtreleme hatası:", err);
+                    if (productGridContainer) productGridContainer.style.opacity = '1';
+                });
+            }, 250);
+        }
+
+        // -------------------------------------------------------------
+        // Dual Price Range Slider Senkronizasyonu
+        // -------------------------------------------------------------
+        const minPriceSlider = document.getElementById('minPriceSlider');
+        const maxPriceSlider = document.getElementById('maxPriceSlider');
+        const minPriceInput = document.getElementById('minPriceInput');
+        const maxPriceInput = document.getElementById('maxPriceInput');
+        const priceSliderRange = document.getElementById('priceSliderRange');
+
+        if (minPriceSlider && maxPriceSlider && minPriceInput && maxPriceInput) {
+            function updateSliderTrack() {
+                const min = parseInt(minPriceSlider.value);
+                const max = parseInt(maxPriceSlider.value);
+                const minPercent = (min / minPriceSlider.max) * 100;
+                const maxPercent = 100 - (max / maxPriceSlider.max) * 100;
+
+                priceSliderRange.style.left = minPercent + '%';
+                priceSliderRange.style.right = maxPercent + '%';
+            }
+
+            minPriceSlider.addEventListener('input', function() {
+                let minVal = parseInt(minPriceSlider.value);
+                let maxVal = parseInt(maxPriceSlider.value);
+
+                if (minVal > maxVal - 200) {
+                    minPriceSlider.value = maxVal - 200;
+                    minVal = maxVal - 200;
+                }
+                minPriceInput.value = minVal;
+                updateSliderTrack();
+            });
+
+            maxPriceSlider.addEventListener('input', function() {
+                let minVal = parseInt(minPriceSlider.value);
+                let maxVal = parseInt(maxPriceSlider.value);
+
+                if (maxVal < minVal + 200) {
+                    maxPriceSlider.value = minVal + 200;
+                    maxVal = minVal + 200;
+                }
+                maxPriceInput.value = maxVal;
+                updateSliderTrack();
+            });
+
+            minPriceInput.addEventListener('change', function() {
+                let val = Math.min(Math.max(parseInt(minPriceInput.value) || 0, 0), parseInt(maxPriceSlider.value) - 200);
+                minPriceInput.value = val;
+                minPriceSlider.value = val;
+                updateSliderTrack();
+            });
+
+            maxPriceInput.addEventListener('change', function() {
+                let val = Math.max(Math.min(parseInt(maxPriceInput.value) || 10000, 10000), parseInt(minPriceSlider.value) + 200);
+                maxPriceInput.value = val;
+                maxPriceSlider.value = val;
+                updateSliderTrack();
+            });
+
+            updateSliderTrack();
+        }
+
+        // -------------------------------------------------------------
+        // Ürün Hızlı Bakış Modalı (Product Quick View)
+        // -------------------------------------------------------------
+        const quickViewModal = document.getElementById('quickViewModal');
+        const qvProductImg = document.getElementById('qvProductImg');
+        const qvImgSpinner = document.getElementById('qvImgSpinner');
+        const qvSellerName = document.getElementById('qvSellerName');
+        const qvProductTitle = document.getElementById('qvProductTitle');
+        const qvProductPrice = document.getElementById('qvProductPrice');
+        const qvProductDesc = document.getElementById('qvProductDesc');
+        const qvColorsContainer = document.getElementById('qvColorsContainer');
+        const qvColorsList = document.getElementById('qvColorsList');
+        const qvSizesContainer = document.getElementById('qvSizesContainer');
+        const qvSizesList = document.getElementById('qvSizesList');
+        const qvSelectedVariantId = document.getElementById('qvSelectedVariantId');
+        const qvSubmitBtn = document.getElementById('qvSubmitBtn');
+
+        let qvProductVariants = [];
+        let qvSelectedColor = '';
+        let qvSelectedSize = '';
+
+        document.addEventListener('click', function(e) {
+            const qvBtn = e.target.closest('.btn-quick-view');
+            if (qvBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const productId = qvBtn.getAttribute('data-product-id');
+                
+                qvProductImg.style.display = 'none';
+                qvImgSpinner.style.display = 'block';
+                qvProductTitle.textContent = 'Yükleniyor...';
+                qvProductDesc.textContent = '';
+                qvProductPrice.textContent = '';
+                qvColorsContainer.style.display = 'none';
+                qvSizesContainer.style.display = 'none';
+                qvSelectedVariantId.value = '';
+                qvSubmitBtn.disabled = true;
+
+                const modalInstance = bootstrap.Modal.getOrCreateInstance(quickViewModal);
+                modalInstance.show();
+
+                fetch(`/product/${productId}/`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    qvProductTitle.textContent = data.title;
+                    qvSellerName.textContent = data.seller_name;
+                    qvProductDesc.textContent = data.description || 'Bu ürün için açıklama bulunmuyor.';
+                    
+                    if (data.image_url) {
+                        qvProductImg.src = data.image_url;
+                        qvProductImg.style.display = 'block';
+                    } else {
+                        qvProductImg.src = '';
+                        qvProductImg.style.display = 'none';
+                    }
+                    qvImgSpinner.style.display = 'none';
+
+                    qvProductVariants = data.variants;
+                    qvSelectedColor = '';
+                    qvSelectedSize = '';
+
+                    const colors = [...new Set(qvProductVariants.map(v => v.color).filter(Boolean))];
+                    if (colors.length > 0) {
+                        qvColorsContainer.style.display = 'block';
+                        qvColorsList.innerHTML = '';
+                        colors.forEach(color => {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = 'btn btn-outline-secondary btn-sm rounded-pill px-3 py-1 font-weight-500';
+                            btn.textContent = color;
+                            btn.style.fontSize = '0.78rem';
+                            btn.style.borderColor = 'var(--border-color)';
+                            btn.addEventListener('click', function() {
+                                qvColorsList.querySelectorAll('button').forEach(b => b.classList.remove('active', 'btn-primary'));
+                                btn.classList.add('active', 'btn-primary');
+                                qvSelectedColor = color;
+                                updateVariantSelection();
+                            });
+                            qvColorsList.appendChild(btn);
+                        });
+                    }
+
+                    const sizes = [...new Set(qvProductVariants.map(v => v.size || v.size_number).filter(Boolean))];
+                    if (sizes.length > 0) {
+                        qvSizesContainer.style.display = 'block';
+                        qvSizesList.innerHTML = '';
+                        sizes.forEach(size => {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = 'btn btn-outline-secondary btn-sm rounded-pill px-3 py-1 font-weight-500';
+                            btn.textContent = size;
+                            btn.style.fontSize = '0.78rem';
+                            btn.style.borderColor = 'var(--border-color)';
+                            btn.addEventListener('click', function() {
+                                qvSizesList.querySelectorAll('button').forEach(b => b.classList.remove('active', 'btn-primary'));
+                                btn.classList.add('active', 'btn-primary');
+                                qvSelectedSize = size.toString();
+                                updateVariantSelection();
+                            });
+                            qvSizesList.appendChild(btn);
+                        });
+                    }
+
+                    if (colors.length === 0 && sizes.length === 0) {
+                        if (qvProductVariants.length > 0) {
+                            const standardVar = qvProductVariants[0];
+                            qvSelectedVariantId.value = standardVar.id;
+                            qvProductPrice.textContent = formatCurrency(parseFloat(standardVar.price));
+                            
+                            if (standardVar.stock > 0) {
+                                qvSubmitBtn.disabled = false;
+                                qvSubmitBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Sepete Ekle';
+                            } else {
+                                qvSubmitBtn.disabled = true;
+                                qvSubmitBtn.innerHTML = 'Tükendi';
+                            }
+                        }
+                    } else {
+                        qvProductPrice.textContent = formatCurrency(data.base_price);
+                        qvSubmitBtn.disabled = true;
+                        qvSubmitBtn.innerHTML = 'Lütfen varyasyon seçiniz';
+                    }
+                })
+                .catch(err => {
+                    console.error("Hızlı bakış hatası:", err);
+                    qvProductTitle.textContent = 'Hata oluştu';
+                    qvImgSpinner.style.display = 'none';
+                });
+            }
+        });
+
+        function updateVariantSelection() {
+            const match = qvProductVariants.find(v => {
+                const colorMatch = !qvColorsContainer.style.display || qvColorsContainer.style.display === 'none' || v.color === qvSelectedColor;
+                const sizeMatch = !qvSizesContainer.style.display || qvSizesContainer.style.display === 'none' || (v.size || v.size_number).toString() === qvSelectedSize;
+                return colorMatch && sizeMatch;
+            });
+
+            if (match) {
+                qvSelectedVariantId.value = match.id;
+                qvProductPrice.textContent = formatCurrency(parseFloat(match.price));
+                
+                if (match.stock > 0) {
+                    qvSubmitBtn.disabled = false;
+                    qvSubmitBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Sepete Ekle';
+                } else {
+                    qvSubmitBtn.disabled = true;
+                    qvSubmitBtn.innerHTML = 'Tükendi';
+                }
+            } else {
+                qvSelectedVariantId.value = '';
+                qvSubmitBtn.disabled = true;
+                qvSubmitBtn.innerHTML = 'Uyumsuz varyasyon';
+            }
+        }
+
+    });
+</script>
+{% endblock %}
+

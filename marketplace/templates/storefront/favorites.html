@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load marketplace_tags %}
+
+{% block title %}Favorilerim - PazarYeri{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <h1 class="text-gradient"><i class="fa-solid fa-heart"></i> Favori Ürünlerim</h1>
+    <p class="text-muted">Beğendiğiniz ve takip ettiğiniz ürünleri buradan sepetinize ekleyebilir veya yönetebilirsiniz.</p>
+</div>
+
+{% if fav_items %}
+    <div class="grid-3">
+        {% for item in fav_items %}
+            <div class="card product-card" style="position: relative; display: flex; flex-direction: column;">
+                <!-- Favorilerden Çıkarma Butonu -->
+                <form action="{% url 'toggle_favorite' item.product.id %}" method="post" style="position: absolute; top: 1rem; right: 1rem; z-index: 10;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" style="padding: 0.5rem; border-radius: 50%; width: 36px; height: 36px; background-color: rgba(244, 63, 94, 0.2); border: 1px solid var(--danger); color: var(--danger); display: flex; align-items: center; justify-content: center;" title="Favorilerden Çıkar">
+                        <i class="fa-solid fa-heart-crack"></i>
+                    </button>
+                </form>
+
+                <a href="{% url 'product_detail' item.product.id %}" class="text-decoration-none text-dark d-flex flex-column flex-grow-1">
+                    <div class="product-image-placeholder" style="height: 220px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f7f7f7; border-radius: 8px;">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            {% if item.product.category.parent.name == "Giyim & Moda" or item.product.category.name == "Giyim & Moda" %}
+                                <i class="fa-solid fa-shirt text-gradient" style="font-size: 2.6rem;"></i>
+                            {% elif item.product.category.parent.name == "Kozmetik & Makyaj" or item.product.category.name == "Kozmetik & Makyaj" %}
+                                <i class="fa-solid fa-sparkles text-gradient" style="font-size: 2.6rem;"></i>
+                            {% elif item.product.category.parent.name == "Takılar" or item.product.category.name == "Takılar" %}
+                                <i class="fa-solid fa-gem text-gradient" style="font-size: 2.6rem;"></i>
+                            {% elif item.product.category.parent.name == "Ayakkabı" or item.product.category.name == "Ayakkabı" %}
+                                <i class="fa-solid fa-shoe-prints text-gradient" style="font-size: 2.6rem;"></i>
+                            {% else %}
+                                <i class="fa-solid fa-bag-shopping text-gradient" style="font-size: 2.6rem;"></i>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div style="padding: 0.8rem 0 0 0; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div class="product-seller-info" style="font-size: 0.78rem; color: #888; margin-bottom: 0.25rem;">
+                            <i class="fa-solid fa-store"></i> {{ item.product.seller.store_name }}
+                        </div>
+                        
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 700; color: #333; min-height: 2.2rem; padding-right: 2rem;">{{ item.product.title }}</h3>
+                        
+                        <p class="text-muted" style="font-size: 0.85rem; flex-grow: 1; margin-bottom: 0.8rem;">
+                            {{ item.product.description|truncatewords:12 }}
+                        </p>
+
+                        <div style="margin-top: auto;">
+                            <div class="product-price" style="font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 0.6rem;">
+                                {{ item.product.base_price|convert_price:request }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                {% with first_variant=item.product.variants.first %}
+                <div style="margin-top: 0.8rem;">
+                    {% if first_variant and first_variant.stock > 0 %}
+                        <form action="{% url 'add_to_cart' %}" method="post" class="m-0 w-100">
+                            {% csrf_token %}
+                            <input type="hidden" name="variant_id" value="{{ first_variant.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm w-100 py-2 btn-add-to-cart-card" style="font-size: 0.78rem; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #ff8c2e); border: none; color: white; font-weight: 700;">
+                                <i class="fa-solid fa-cart-plus me-1"></i> Sepete Ekle
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-secondary btn-sm w-100 py-2 text-muted" style="font-size: 0.78rem; border-radius: 8px; background-color: #f1f2f4; border: none; cursor: not-allowed; font-weight: 600;" disabled>
+                            Tükendi
+                        </button>
+                    {% endif %}
+                </div>
+                {% endwith %}
+
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 5rem 2rem;">
+        <i class="fa-regular fa-heart" style="font-size: 5rem; color: var(--text-secondary); margin-bottom: 2rem;"></i>
+        <h2>Henüz favori ürününüz yok!</h2>
+        <p class="text-muted" style="margin-top: 0.5rem; margin-bottom: 2rem;">Ürün detay sayfalarındaki kalp butonuna tıklayarak beğendiğiniz kıyafetleri, takıları ve kozmetik ürünlerini buraya ekleyebilirsiniz.</p>
+        <a href="{% url 'store_index' %}" class="btn btn-primary">Alışverişe Devam Et <i class="fa-solid fa-bag-shopping"></i></a>
+    </div>
+{% endif %}
+{% endblock %}

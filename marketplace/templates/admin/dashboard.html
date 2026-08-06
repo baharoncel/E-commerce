@@ -1,0 +1,770 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Superadmin Yönetici Paneli | Marketplace Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header-card {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+    }
+    .metric-card {
+        border: none;
+        border-radius: 14px;
+        background: var(--bg-card, #ffffff);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+    .metric-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+    .bg-gradient-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; }
+    .bg-gradient-green { background: linear-gradient(135deg, #10b981, #047857); color: #fff; }
+    .bg-gradient-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; }
+    .bg-gradient-amber { background: linear-gradient(135deg, #f59e0b, #b45309); color: #fff; }
+    .bg-gradient-rose { background: linear-gradient(135deg, #f43f5e, #be123c); color: #fff; }
+
+    .nav-tabs-custom {
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+    .nav-tabs-custom .nav-link {
+        border: none;
+        color: #64748b;
+        font-weight: 600;
+        padding: 0.85rem 1.25rem;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s ease;
+    }
+    .nav-tabs-custom .nav-link:hover {
+        color: #1e293b;
+    }
+    .nav-tabs-custom .nav-link.active {
+        color: var(--primary, #f27a1a);
+        background: transparent;
+        border-bottom-color: var(--primary, #f27a1a);
+    }
+
+    .table-custom {
+        vertical-align: middle;
+    }
+    .table-custom th {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        background-color: rgba(0,0,0,0.02);
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .status-badge {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 50rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-lg-5">
+
+    <!-- Admin Header Banner -->
+    <div class="admin-header-card p-4 p-md-5 mb-4 position-relative overflow-hidden">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center position-relative" style="z-index: 2;">
+            <div>
+                <span class="badge bg-warning text-dark fw-bold mb-2 px-3 py-2" style="border-radius: 20px;">
+                    <i class="fa-solid fa-crown me-1"></i> PLATFORM YÖNETİCİ KONTROL PANELİ
+                </span>
+                <h2 class="fw-extrabold mb-1">Hoş Geldiniz, Sayın {{ user.username }}</h2>
+                <p class="text-white-50 mb-0">Pazaryeri canlı satışlarını, komisyon gelirlerini, satıcı başvurularını ve kategorileri buradan yönetebilirsiniz.</p>
+            </div>
+            <div class="mt-3 mt-md-0 d-flex gap-2">
+                <a href="{% url 'admin_export_platform_csv' %}" class="btn btn-success text-white fw-bold rounded-pill px-3">
+                    <i class="fa-solid fa-file-excel me-1"></i> Finans Raporu (.CSV)
+                </a>
+                <a href="{% url 'store_index' %}" class="btn btn-outline-light rounded-pill px-3">
+                    <i class="fa-solid fa-store me-1"></i> Mağazaya Dön
+                </a>
+                <a href="/admin/" target="_blank" class="btn btn-warning text-dark fw-bold rounded-pill px-3">
+                    <i class="fa-solid fa-gear me-1"></i> Django Admin
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrik İstatistik Kartları (KPI Cards) -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card metric-card p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase">Platform Toplam Ciro (GMV)</span>
+                        <h3 class="fw-bold mt-1 mb-0 text-dark">{{ total_gmv|floatformat:2 }} TL</h3>
+                        <small class="text-success fw-semibold"><i class="fa-solid fa-arrow-trend-up me-1"></i>Tamamlanan Siparişler</small>
+                    </div>
+                    <div class="metric-icon bg-gradient-blue">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card metric-card p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase">Net Komisyon Geliri</span>
+                        <h3 class="fw-bold mt-1 mb-0 text-success">{{ total_platform_commission|floatformat:2 }} TL</h3>
+                        <small class="text-muted">Platform Kazancı</small>
+                    </div>
+                    <div class="metric-icon bg-gradient-green">
+                        <i class="fa-solid fa-piggy-bank"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card metric-card p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase">Satıcı Hak Ediş Tutarı</span>
+                        <h3 class="fw-bold mt-1 mb-0 text-primary">{{ total_seller_payout|floatformat:2 }} TL</h3>
+                        <small class="text-muted">Satıcılara Aktarılacak Net</small>
+                    </div>
+                    <div class="metric-icon bg-gradient-purple">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card metric-card p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-bold text-uppercase">Aktif Mağazalar</span>
+                        <h3 class="fw-bold mt-1 mb-0 text-dark">{{ approved_sellers.count }}</h3>
+                        <small class="{% if pending_sellers.count > 0 %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                            <i class="fa-solid fa-clock me-1"></i>{{ pending_sellers.count }} Onay Bekliyor
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-gradient-amber">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart & Quick Stats Section -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-chart-area text-primary me-2"></i>Son 7 Günlük Platform Satış & Komisyon Grafiği</h5>
+                    <span class="badge bg-light text-dark border">Canlı Veri</span>
+                </div>
+                <div style="height: 280px; position: relative;">
+                    <canvas id="superadminSalesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-layer-group text-warning me-2"></i>Platform Özet Metrikleri</h5>
+                    
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted"><i class="fa-solid fa-users me-2 text-info"></i>Toplam Müşteri Sayısı:</span>
+                        <span class="fw-bold text-dark fs-6">{{ total_customers_count }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted"><i class="fa-solid fa-box-open me-2 text-success"></i>Toplam Yayındaki Ürün:</span>
+                        <span class="fw-bold text-dark fs-6">{{ total_products_count }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted"><i class="fa-solid fa-cart-shopping me-2 text-primary"></i>Toplam Ana Sipariş:</span>
+                        <span class="fw-bold text-dark fs-6">{{ total_orders_count }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted"><i class="fa-solid fa-tags me-2 text-purple"></i>Aktif Platform Kuponları:</span>
+                        <span class="fw-bold text-dark fs-6">{{ platform_coupons.count }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-light rounded-3 text-center">
+                    <span class="small text-muted d-block mb-1">Satıcı Onay Bekleme Uyarısı</span>
+                    {% if pending_sellers.count > 0 %}
+                        <span class="badge bg-danger fs-6 px-3 py-2 w-100"><i class="fa-solid fa-triangle-exclamation me-1"></i> {{ pending_sellers.count }} Mağaza Onay Bekliyor!</span>
+                    {% else %}
+                        <span class="badge bg-success fs-6 px-3 py-2 w-100"><i class="fa-solid fa-circle-check me-1"></i> Tüm başvurular incelendi</span>
+                    {% endif %}
+                </div>
+            </div>
+    <!-- Additional Analytics Row -->
+    <div class="row g-4 mb-4">
+        <!-- Mağaza Ciro Dağılımı (Top 5 Sellers) -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-store text-primary me-2"></i>Mağaza Ciro Dağılımı (Top 5)</h5>
+                    <span class="badge bg-light text-dark border">Ciro Oranı</span>
+                </div>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="sellerRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sipariş Statü Dağılımı -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-truck-ramp-box text-success me-2"></i>Sipariş Statü Dağılımı</h5>
+                    <span class="badge bg-light text-dark border">Adet Bazlı</span>
+                </div>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabbed Management Panel -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-3 px-4">
+            <ul class="nav nav-tabs nav-tabs-custom card-header-tabs" id="adminTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="sellers-tab" data-bs-toggle="tab" data-bs-target="#sellers-panel" type="button" role="tab">
+                        <i class="fa-solid fa-store me-2"></i> Satıcı Mağazaları ({{ sellers.count }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories-panel" type="button" role="tab">
+                        <i class="fa-solid fa-list-tree me-2"></i> Kategori Yönetimi
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders-panel" type="button" role="tab">
+                        <i class="fa-solid fa-receipt me-2"></i> Platform Siparişleri ({{ sub_orders.count }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="coupons-tab" data-bs-toggle="tab" data-bs-target="#coupons-panel" type="button" role="tab">
+                        <i class="fa-solid fa-ticket me-2"></i> Platform Kuponları
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-panel" type="button" role="tab">
+                        <i class="fa-solid fa-users me-2"></i> Kullanıcılar ({{ all_users.count }})
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="tab-content" id="adminTabsContent">
+                
+                <!-- TAB 1: SATICILAR SEKMESİ -->
+                <div class="tab-pane fade show active" id="sellers-panel" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-dark mb-0">Satıcı Mağazaları & Komisyon Ayarları</h5>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Mağaza Adı</th>
+                                    <th>Kullanıcı / E-Posta</th>
+                                    <th>IBAN</th>
+                                    <th>Komisyon Oranı (%)</th>
+                                    <th>Durum</th>
+                                    <th class="text-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in sellers %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ s.store_name }}</div>
+                                        <small class="text-muted">Ürün Sayısı: {{ s.products.count }}</small>
+                                    </td>
+                                    <td>
+                                        <div>{{ s.user.username }}</div>
+                                        <small class="text-muted">{{ s.user.email }}</small>
+                                    </td>
+                                    <td>
+                                        <code class="text-dark bg-light px-2 py-1 rounded">{{ s.iban }}</code>
+                                    </td>
+                                    <td>
+                                        <!-- Komisyon Güncelleme Formu -->
+                                        <form action="{% url 'admin_update_commission_rate' s.id %}" method="post" class="d-flex align-items-center gap-2" style="max-width: 170px;">
+                                            {% csrf_token %}
+                                            <input type="number" step="0.01" min="0" max="100" name="commission_rate" class="form-control form-control-sm text-center fw-bold" value="{{ s.commission_rate }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" title="Oranı Güncelle">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        {% if s.is_approved %}
+                                            <span class="status-badge bg-success-subtle text-success border border-success-subtle">
+                                                <i class="fa-solid fa-circle-check me-1"></i> Aktif / Onaylı
+                                            </span>
+                                        {% else %}
+                                            <span class="status-badge bg-warning-subtle text-warning border border-warning-subtle">
+                                                <i class="fa-solid fa-clock me-1"></i> Onay Bekliyor
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <form action="{% url 'admin_toggle_seller_approval' s.id %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            {% if s.is_approved %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Mağazayı Askıya Al">
+                                                    <i class="fa-solid fa-ban me-1"></i> Askıya Al
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-sm btn-success text-white fw-bold" title="Mağazayı Onayla">
+                                                    <i class="fa-solid fa-check me-1"></i> Onayla & Aktif Et
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">Kayıtlı satıcı bulunmamaktadır.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 2: KATEGORİ YÖNETİMİ SEKMESİ -->
+                <div class="tab-pane fade" id="categories-panel" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-4">
+                            <div class="card bg-light border-0 rounded-4 p-4">
+                                <h5 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-plus-circle text-primary me-2"></i>Yeni Kategori Ekle</h5>
+                                <form action="{% url 'admin_create_category' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">Kategori Adı</label>
+                                        <input type="text" name="name" class="form-control" placeholder="Örn: Elektronik, Saat vb." required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">Üst Kategori (Opsiyonel)</label>
+                                        <select name="parent_id" class="form-select">
+                                            <option value="">-- Ana Kategori Yap --</option>
+                                            {% for c in all_categories_flat %}
+                                                <option value="{{ c.id }}">{{ c }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="form-text">Boş bırakılırsa yeni bir Ana Kategori olarak eklenir.</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill">
+                                        <i class="fa-solid fa-save me-1"></i> Kategoriyi Kaydet
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            <h5 class="fw-bold mb-3 text-dark">Mevcut Kategori Ağacı</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Kategori Hiyerarşisi</th>
+                                            <th>Slug</th>
+                                            <th>Alt Kategoriler</th>
+                                            <th class="text-end">İşlem</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for main_cat in categories %}
+                                        <tr class="table-group-divider fw-bold bg-light">
+                                            <td>
+                                                <i class="fa-solid fa-folder-open text-warning me-2"></i>{{ main_cat.name }}
+                                            </td>
+                                            <td><code>{{ main_cat.slug }}</code></td>
+                                            <td><span class="badge bg-secondary">{{ main_cat.subcategories.count }} Alt Kategori</span></td>
+                                            <td class="text-end">
+                                                <form action="{% url 'admin_delete_category' main_cat.id %}" method="post" onsubmit="return confirm('Bu ana kategoriyi ve tüm alt kategorilerini silmek istediğinize emin misiniz?');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                            {% for sub in main_cat.subcategories.all %}
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <i class="fa-solid fa-turn-up text-muted me-2" style="transform: rotate(90deg);"></i>
+                                                    <i class="fa-regular fa-folder text-primary me-2"></i>{{ sub.name }}
+                                                </td>
+                                                <td><code>{{ sub.slug }}</code></td>
+                                                <td><span class="text-muted small">Alt Kategori</span></td>
+                                                <td class="text-end">
+                                                    <form action="{% url 'admin_delete_category' sub.id %}" method="post" onsubmit="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?');">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">Kategori bulunmamaktadır.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: PLATFORM SİPARİŞLERİ SEKMESİ -->
+                <div class="tab-pane fade" id="orders-panel" role="tabpanel">
+                    <h5 class="fw-bold mb-3 text-dark">Tüm Satıcı Alt Siparişleri & Komisyon Kesintileri</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Sipariş ID</th>
+                                    <th>Müşteri</th>
+                                    <th>Mağaza</th>
+                                    <th>Tutar</th>
+                                    <th>Platform Komisyonu</th>
+                                    <th>Satıcı Payı</th>
+                                    <th>Ödeme Durumu</th>
+                                    <th>Kargo Durumu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for so in sub_orders %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">Alt Sipariş #{{ so.id }}</div>
+                                        <small class="text-muted">Ana Sipariş #{{ so.parent_order.id }}</small>
+                                    </td>
+                                    <td>{{ so.parent_order.customer.username }}</td>
+                                    <td><span class="badge bg-light text-dark border">{{ so.seller.store_name }}</span></td>
+                                    <td class="fw-bold">{{ so.subtotal }} TL</td>
+                                    <td class="text-success fw-bold">+{{ so.commission_fee }} TL</td>
+                                    <td class="text-primary fw-bold">{{ so.seller_payout }} TL</td>
+                                    <td>
+                                        {% if so.parent_order.payment_status == 'PAID' %}
+                                            <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> Ödendi</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark"><i class="fa-solid fa-clock me-1"></i> Bekliyor</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">{{ so.get_status_display }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">Henüz verilmiş bir sipariş yok.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4: PLATFORM KUPONLARI SEKMESİ -->
+                <div class="tab-pane fade" id="coupons-panel" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-4">
+                            <div class="card bg-light border-0 rounded-4 p-4">
+                                <h5 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-ticket text-purple me-2"></i>Platform Geneli Kupon Üret</h5>
+                                <form action="{% url 'admin_create_platform_coupon' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">Kupon Kodu</label>
+                                        <input type="text" name="code" class="form-control text-uppercase fw-bold" placeholder="Örn: PLATFORM20" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">İndirim Tipi</label>
+                                        <select name="discount_type" class="form-select">
+                                            <option value="PERCENTAGE">Yüzdelik (%)</option>
+                                            <option value="FIXED_AMOUNT">Sabit Tutar (TL)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">İndirim Değeri</label>
+                                        <input type="number" step="0.01" name="discount_value" class="form-control" placeholder="Örn: 20 veya 100" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">Min. Sepet Tutarı (TL)</label>
+                                        <input type="number" step="0.01" name="minimum_order_amount" class="form-control" value="0.00">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold text-muted small">Kullanım Limiti</label>
+                                        <input type="number" name="usage_limit" class="form-control" value="100">
+                                    </div>
+                                    <button type="submit" class="btn btn-purple text-white w-100 fw-bold rounded-pill" style="background-color: #8b5cf6;">
+                                        <i class="fa-solid fa-plus me-1"></i> Platform Kuponunu Yayınla
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            <h5 class="fw-bold mb-3 text-dark">Aktif Platform Kuponları</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Kupon Kodu</th>
+                                            <th>İndirim</th>
+                                            <th>Min. Sepet</th>
+                                            <th>Kullanım</th>
+                                            <th>Oluşturulma</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for c in platform_coupons %}
+                                        <tr>
+                                            <td><span class="badge bg-purple text-white fs-6 px-3 py-2" style="background-color:#8b5cf6;">{{ c.code }}</span></td>
+                                            <td class="fw-bold">
+                                                {% if c.discount_type == 'PERCENTAGE' %}
+                                                    %{{ c.discount_value }} İndirim
+                                                {% else %}
+                                                    {{ c.discount_value }} TL İndirim
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ c.minimum_order_amount }} TL</td>
+                                            <td><span class="badge bg-light text-dark border">{{ c.used_count }} / {{ c.usage_limit }}</span></td>
+                                            <td><small class="text-muted">{{ c.created_at|date:"d M Y H:i" }}</small></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">Platform geneli kupon bulunmamaktadır.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: KULLANICILAR SEKMESİ -->
+                <div class="tab-pane fade" id="users-panel" role="tabpanel">
+                    <h5 class="fw-bold mb-3 text-dark">Kayıtlı Platform Kullanıcıları</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı Adı</th>
+                                    <th>E-Posta</th>
+                                    <th>Rol</th>
+                                    <th>Kayıt Tarihi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in all_users %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ u.username }}</div>
+                                        {% if u.first_name %}<small class="text-muted">{{ u.get_full_name }}</small>{% endif %}
+                                    </td>
+                                    <td>{{ u.email }}</td>
+                                    <td>
+                                        {% if u.role == 'SUPERADMIN' or u.is_superuser %}
+                                            <span class="badge bg-dark text-warning"><i class="fa-solid fa-crown me-1"></i> Super Admin</span>
+                                        {% elif u.role == 'SELLER' %}
+                                            <span class="badge bg-primary"><i class="fa-solid fa-store me-1"></i> Satıcı</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary"><i class="fa-solid fa-user me-1"></i> Müşteri</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><small class="text-muted">{{ u.date_joined|date:"d M Y H:i" }}</small></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">Kayıtlı kullanıcı bulunamadı.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js Entegrasyonu -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const labels = JSON.parse('{{ daily_labels_json|escapejs }}');
+        const gmvData = JSON.parse('{{ daily_gmv_json|escapejs }}');
+        const commData = JSON.parse('{{ daily_commission_json|escapejs }}');
+
+        const topSellerNames = JSON.parse('{{ top_seller_names_json|default:"[]"|escapejs }}');
+        const topSellerRevenues = JSON.parse('{{ top_seller_revenues_json|default:"[]"|escapejs }}');
+
+        const orderStatusLabels = JSON.parse('{{ order_status_labels_json|default:"[]"|escapejs }}');
+        const orderStatusCounts = JSON.parse('{{ order_status_counts_json|default:"[]"|escapejs }}');
+
+        // 1. Platform Ciro & Komisyon Grafiği (Combo / Area)
+        const salesElem = document.getElementById('superadminSalesChart');
+        if (salesElem) {
+            const ctx2d = salesElem.getContext('2d');
+            const gradientGMV = ctx2d.createLinearGradient(0, 0, 0, 280);
+            gradientGMV.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
+            gradientGMV.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+            const gradientComm = ctx2d.createLinearGradient(0, 0, 0, 280);
+            gradientComm.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
+            gradientComm.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+            new Chart(ctx2d, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Platform Ciro (TL)',
+                            data: gmvData,
+                            borderColor: '#6366f1',
+                            backgroundColor: gradientGMV,
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#6366f1',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Net Komisyon Geliri (TL)',
+                            data: commData,
+                            borderColor: '#10b981',
+                            backgroundColor: gradientComm,
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#10b981',
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { usePointStyle: true, font: { family: 'Plus Jakarta Sans', weight: '600', size: 12 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' TL';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: { callback: function(val) { return val + ' TL'; } }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // 2. Mağaza Ciro Dağılımı (Doughnut Chart)
+        const sellerElem = document.getElementById('sellerRevenueChart');
+        if (sellerElem) {
+            new Chart(sellerElem.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: topSellerNames,
+                    datasets: [{
+                        data: topSellerRevenues,
+                        backgroundColor: ['#6366f1', '#f97316', '#10b981', '#06b6d4', '#ec4899'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: { family: 'Plus Jakarta Sans', size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.label + ': ' + ctx.parsed.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' TL';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. Sipariş Statü Dağılımı (Bar Chart)
+        const statusElem = document.getElementById('orderStatusChart');
+        if (statusElem) {
+            new Chart(statusElem.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: orderStatusLabels,
+                    datasets: [{
+                        label: 'Sipariş Sayısı',
+                        data: orderStatusCounts,
+                        backgroundColor: ['#06b6d4', '#f59e0b', '#6366f1', '#10b981', '#ef4444'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(226, 232, 240, 0.6)' }, ticks: { stepSize: 1 } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

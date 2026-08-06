@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Ürün Karşılaştırma | Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fa-solid fa-code-compare text-primary me-2"></i>Ürün Karşılaştırma</h2>
+            <p class="text-muted mb-0">Seçtiğiniz ürünleri yan yana fiyat, varyasyon ve puan bakımından inceleyin.</p>
+        </div>
+        <a href="{% url 'store_index' %}" class="btn btn-outline-secondary rounded-pill">
+            <i class="fa-solid fa-arrow-left me-1"></i> Alışverişe Dön
+        </a>
+    </div>
+
+    {% if products %}
+    <div class="table-responsive bg-white rounded-4 shadow-sm p-3">
+        <table class="table table-bordered align-middle text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 200px;" class="text-start">Özellik</th>
+                    {% for p in products %}
+                    <th style="width: 280px;">
+                        <img src="{{ p.image_url }}" alt="{{ p.title }}" style="width: 100px; height: 100px; object-fit: contain;" class="mb-2">
+                        <h6 class="fw-bold mb-1">{{ p.title }}</h6>
+                        <span class="badge bg-light text-dark border">{{ p.seller.store_name }}</span>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-start">Fiyat</td>
+                    {% for p in products %}
+                    <td><span class="fs-5 fw-bold text-primary">{{ p.base_price }} TL</span></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="fw-bold text-start">Kategori</td>
+                    {% for p in products %}
+                    <td>{{ p.category }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="fw-bold text-start">Ortalama Puan</td>
+                    {% for p in products %}
+                    <td><span class="badge bg-warning text-dark"><i class="fa-solid fa-star me-1"></i>{{ p.average_rating }} / 5.0</span></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="fw-bold text-start">Mevcut Varyasyonlar</td>
+                    {% for p in products %}
+                    <td>
+                        {% for v in p.variants.all %}
+                        <span class="badge bg-light text-dark border me-1 mb-1">{{ v }} (Stok: {{ v.stock }})</span>
+                        {% empty %}
+                        <span class="text-muted">Standart</span>
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="fw-bold text-start">İşlem</td>
+                    {% for p in products %}
+                    <td>
+                        <a href="{% url 'product_detail' p.id %}" class="btn btn-sm btn-primary rounded-pill w-100">
+                            <i class="fa-solid fa-eye me-1"></i> Ürünü İncele
+                        </a>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card p-5 text-center text-muted rounded-4 border-0 shadow-sm">
+        <i class="fa-solid fa-code-compare fs-1 mb-3 text-primary"></i>
+        <h5>Karşılaştırmak için henüz ürün seçilmedi.</h5>
+        <p>Ürün detay sayfalarındaki veya aramadaki ürünleri seçerek karşılaştırabilirsiniz.</p>
+        <div>
+            <a href="{% url 'store_index' %}" class="btn btn-primary rounded-pill">Ürünleri Keşfet</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

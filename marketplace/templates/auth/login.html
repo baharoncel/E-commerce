@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Giriş Yap - PazarYeri{% endblock %}
+
+{% block content %}
+<div style="max-width: 450px; margin: 4rem auto;">
+    <div class="card" style="padding: 2.5rem;">
+        <h2 style="text-align: center; margin-bottom: 2rem;" class="text-gradient">
+            <i class="fa-solid fa-lock"></i> Hesaba Giriş
+        </h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Kullanıcı Adı</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Kullanıcı adınızı girin" required>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="password" class="form-label">Şifre</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Şifrenizi girin" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Giriş Yap <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <div class="text-center my-3 text-muted small position-relative">
+            <hr class="my-3">
+            <span class="bg-white px-2 position-absolute top-50 start-50 translate-middle">VEYA</span>
+        </div>
+
+        <!-- Social & Phone Login Buttons -->
+        <div class="d-flex flex-column gap-2">
+            <button type="button" class="btn btn-outline-danger w-100 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2" onclick="loginWithGoogle()">
+                <i class="fa-brands fa-google fs-5"></i> Google ile Tek Tıkla Giriş
+            </button>
+
+            <button type="button" class="btn btn-outline-success w-100 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#otpModal">
+                <i class="fa-solid fa-mobile-screen-button fs-5"></i> Telefon Numarası (SMS OTP) ile Giriş
+            </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;" class="text-muted">
+            Hesabınız yok mu? <a href="{% url 'register' %}" style="font-weight: 600;">Hemen Kayıt Olun</a>
+        </div>
+    </div>
+</div>
+
+<!-- SMS OTP Login Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg p-3">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-gradient"><i class="fa-solid fa-shield-halved text-success"></i> Telefon ile Giriş (SMS OTP)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="otpStep1">
+                    <p class="text-muted small">Cep telefonunuza 6 haneli doğrulama kodu gönderilecektir.</p>
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold">Telefon Numarası</label>
+                        <input type="text" id="otpPhoneInput" class="form-control" placeholder="5551234567" value="5551234567">
+                    </div>
+                    <button type="button" class="btn btn-success w-100 rounded-pill fw-bold" onclick="sendOtpCode()">Kod Gönder</button>
+                </div>
+                <div id="otpStep2" style="display: none;">
+                    <p class="text-success small fw-bold" id="otpStatusMsg"></p>
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold">6 Haneli Kodu Giriniz</label>
+                        <input type="text" id="otpCodeInput" class="form-control text-center fw-extrabold fs-4" placeholder="123456" maxlength="6">
+                    </div>
+                    <button type="button" class="btn btn-primary w-100 rounded-pill fw-bold" onclick="verifyOtpCode()">Doğrula ve Giriş Yap</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loginWithGoogle() {
+    fetch('/auth/google-login/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'email=demo_google_user@gmail.com&name=Google+Demo+Kullanici'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            window.location.href = data.redirect_url;
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+function sendOtpCode() {
+    const phone = document.getElementById('otpPhoneInput').value;
+    fetch('/auth/send-otp/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `phone=${encodeURIComponent(phone)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            document.getElementById('otpStep1').style.display = 'none';
+            document.getElementById('otpStep2').style.display = 'block';
+            document.getElementById('otpStatusMsg').textContent = data.message;
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+function verifyOtpCode() {
+    const phone = document.getElementById('otpPhoneInput').value;
+    const otp = document.getElementById('otpCodeInput').value;
+    fetch('/auth/verify-otp/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `phone=${encodeURIComponent(phone)}&otp_code=${encodeURIComponent(otp)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            window.location.href = data.redirect_url;
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kargo Teslimat Etiketi - #{{ sub_order.id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 2rem;
+        }
+        .label-card {
+            width: 480px;
+            background: #ffffff;
+            border: 2px solid #0f172a;
+            border-radius: 12px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .label-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .company-badge {
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .barcode-section {
+            text-align: center;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .info-box {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .no-print { display: none !important; }
+            .label-card { border: 2px solid #000; box-shadow: none; width: 100%; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print" style="max-width: 480px; margin: 0 auto 1rem auto; text-align: right;">
+    <button onclick="window.print()" style="background: #059669; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: bold; cursor: pointer;">
+        <i class="fa-solid fa-print"></i> Etiketi Yazdır (PDF)
+    </button>
+</div>
+
+<div class="label-card">
+    <div class="label-header">
+        <div>
+            <h3 style="margin: 0; color: #0f172a; font-weight: 800;">PazarYeri Express</h3>
+            <small style="color: #64748b;">Standart Kargo Teslimat Fişi</small>
+        </div>
+        <span class="company-badge">{{ sub_order.parent_order.shipping_company|default:"Yurtiçi Kargo" }}</span>
+    </div>
+
+    <!-- Code128 SVG Barcode -->
+    <div class="barcode-section">
+        {{ barcode_svg|safe }}
+        <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Kargo Takip No: <strong>{{ tracking_no }}</strong></div>
+    </div>
+
+    <div class="info-box">
+        <strong>ALICI (MÜŞTERİ):</strong><br>
+        <span style="font-size: 1rem; font-weight: 800; color: #0f172a;">{{ sub_order.parent_order.customer.get_full_name|default:sub_order.parent_order.customer.username }}</span><br>
+        Adres: {{ sub_order.parent_order.shipping_address|default:"Maslak Mah. Büyükdere Cad. No:123 Sarıyer / İstanbul" }}<br>
+        E-Posta: {{ sub_order.parent_order.customer.email }}
+    </div>
+
+    <div class="info-box">
+        <strong>GÖNDERİCİ (MAĞAZA):</strong><br>
+        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">{{ sub_order.seller.store_name }}</span><br>
+        Alt Sipariş No: <strong>#{{ sub_order.id }}</strong> (Ana Sipariş: #{{ sub_order.parent_order.id }})
+    </div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b;">
+        <span>Tarih: {{ today|date:"d.m.Y H:i" }}</span>
+        <span>Desi: <strong>1.5 Desi</strong></span>
+        <span>Ödeme: <strong>Alıcı Ödemeli (Kredi Kartı)</strong></span>
+    </div>
+</div>
+
+</body>
+</html>

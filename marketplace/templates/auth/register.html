@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block title %}Kayıt Ol - PazarYeri{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        max-width: 520px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .register-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent));
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: var(--text-primary);
+        letter-spacing: 0.02em;
+    }
+    .form-control, .form-select {
+        border-radius: 12px;
+        border: 1.5px solid var(--border-color);
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(242, 122, 26, 0.15);
+        background-color: var(--bg-card);
+        outline: none;
+    }
+    .input-icon-wrapper {
+        position: relative;
+    }
+    .input-icon-wrapper i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 1rem;
+        pointer-events: none;
+        transition: color 0.25s ease;
+    }
+    .input-icon-wrapper .form-control {
+        padding-left: 2.75rem;
+    }
+    .input-icon-wrapper .form-control:focus ~ i {
+        color: var(--primary);
+    }
+    .btn-register {
+        background: linear-gradient(135deg, var(--primary), #d96200);
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        padding: 0.85rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(242, 122, 26, 0.25);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(242, 122, 26, 0.4);
+        color: #fff;
+    }
+    .btn-register:active {
+        transform: translateY(0);
+    }
+    #sellerFields {
+        border-left: 4px solid var(--accent);
+        background-color: rgba(251, 191, 36, 0.04);
+        border-radius: 0 12px 12px 0;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        display: none;
+        animation: slideDownFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDownFade {
+        from { opacity: 0; transform: translateY(-10px); max-height: 0; }
+        to { opacity: 1; transform: translateY(0); max-height: 500px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <h2 style="text-align: center; margin-bottom: 2rem;" class="text-gradient">
+            <i class="fa-solid fa-user-plus"></i> Yeni Hesap Oluştur
+        </h2>
+        
+        <form method="post" id="registerForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Kullanıcı Adı</label>
+                <div class="input-icon-wrapper">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Kullanıcı adınızı girin" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">E-Posta Adresi</label>
+                <div class="input-icon-wrapper">
+                    <input type="email" id="email" name="email" class="form-control" placeholder="E-posta adresinizi girin" required>
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="role" class="form-label">Kayıt Rolü (Platform Yetkisi)</label>
+                <div class="input-icon-wrapper">
+                    <select id="role" name="role" class="form-select form-control" required>
+                        <option value="CUSTOMER">Customer (Standart Müşteri)</option>
+                        <option value="SELLER">Seller (Dükkan Açan Satıcı)</option>
+                    </select>
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+            </div>
+
+            <!-- Satıcıya Özel Dinamik Alanlar -->
+            <div id="sellerFields">
+                <h4 style="color: var(--accent); margin-bottom: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-store"></i> Mağaza Bilgileri
+                </h4>
+                
+                <div class="form-group">
+                    <label for="store_name" class="form-label">Mağaza Adı</label>
+                    <div class="input-icon-wrapper">
+                        <input type="text" id="store_name" name="store_name" class="form-control" placeholder="Mağazanızın adını yazın">
+                        <i class="fa-solid fa-shop"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="iban" class="form-label">IBAN Numarası</label>
+                    <div class="input-icon-wrapper">
+                        <input type="text" id="iban" name="iban" class="form-control" placeholder="TR00 0000 0000...">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="commission_rate" class="form-label">Simüle Edilecek Komisyon Oranı (%)</label>
+                    <div class="input-icon-wrapper">
+                        <input type="number" id="commission_rate" name="commission_rate" class="form-control" value="10.00" step="0.01" min="0" max="100">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                    <small class="text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.75rem;">Bu mağazadan yapılan her satıştan platformun keseceği simülasyon komisyonu.</small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Şifre</label>
+                <div class="input-icon-wrapper">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Güçlü bir şifre girin" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="confirm_password" class="form-label">Şifre Tekrar</label>
+                <div class="input-icon-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Şifrenizi tekrar girin" required>
+                    <i class="fa-solid fa-lock-open"></i>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-register">
+                Kayıt Ol <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2rem; font-size: 0.9rem;" class="text-muted">
+            Zaten hesabınız var mı? <a href="{% url 'login' %}" style="font-weight: 600;">Giriş Yapın</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const roleSelect = document.getElementById('role');
+    const sellerFields = document.getElementById('sellerFields');
+    const storeNameInput = document.getElementById('store_name');
+    const ibanInput = document.getElementById('iban');
+
+    roleSelect.addEventListener('change', function() {
+        if (this.value === 'SELLER') {
+            sellerFields.style.display = 'block';
+            storeNameInput.setAttribute('required', 'true');
+            ibanInput.setAttribute('required', 'true');
+        } else {
+            sellerFields.style.display = 'none';
+            storeNameInput.removeAttribute('required');
+            ibanInput.removeAttribute('required');
+        }
+    });
+</script>
+{% endblock %}

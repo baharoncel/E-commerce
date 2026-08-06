@@ -1,0 +1,77 @@
+{% load marketplace_tags %}
+{% if products %}
+    <div class="section-title" style="margin-bottom: 0.85rem;">Tüm Ürünler</div>
+    <div class="grid-3" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;">
+        {% for product in products %}
+            <div class="trendy-product-card" style="position: relative; display: flex; flex-direction: column;">
+                <div class="product-badge-top">Yeni</div>
+                
+                <!-- Favori Butonu -->
+                <button type="button" class="favorite-heart-btn" data-product-id="{{ product.id }}" style="position: absolute; top: 10px; right: 10px; z-index: 10; border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); transition: all 0.2s ease; cursor: pointer;">
+                    {% if product.id in favorited_product_ids %}
+                        <i class="fa-solid fa-heart text-danger fs-5"></i>
+                    {% else %}
+                        <i class="fa-regular fa-heart text-muted fs-5"></i>
+                    {% endif %}
+                </button>
+
+                <!-- Tıklanınca Ürün Detayını Açan Link Alanı -->
+                <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark d-flex flex-column flex-grow-1">
+                    <div class="trendy-product-card-img-container" style="height: 220px; background: url('{% lqip_placeholder product %}') center/cover no-repeat; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                        {% if product.image %}
+                            <img src="{% cdn_url product.image_url %}" 
+                                 srcset="{% responsive_srcset product %}" 
+                                 sizes="(max-width: 600px) 300px, 600px"
+                                 alt="{{ product.title }}" 
+                                 loading="lazy"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <i class="fa-solid fa-shirt" style="color: #ccc; font-size: 2.6rem;"></i>
+                        {% endif %}
+                        
+                        {% if product.dominant_color %}
+                            <span style="position: absolute; bottom: 8px; left: 8px; width: 14px; height: 14px; border-radius: 50%; background-color: {{ product.dominant_color }}; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" title="Baskın Renk: {{ product.dominant_color }}"></span>
+                        {% endif %}
+
+                        <!-- Hızlı Bakış Butonu -->
+                        <button type="button" class="btn-quick-view" data-product-id="{{ product.id }}" onclick="event.preventDefault(); event.stopPropagation();">
+                            <i class="fa-solid fa-eye"></i> Hızlı Bakış
+                        </button>
+                    </div>
+                    <div style="padding: 0.8rem; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="font-size: 0.78rem; color: #888; margin-bottom: 0.25rem;">{{ product.seller.store_name }}</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #333; min-height: 2.2rem;">{{ product.title }}</div>
+                        <div style="margin-top: 0.7rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div class="product-price">{{ product.base_price|convert_price:request }}</div>
+                        </div>
+                    </div>
+                </a>
+
+                {% with first_variant=product.variants.first %}
+                <div style="padding: 0 0.8rem 0.8rem 0.8rem; margin-top: auto;">
+                    {% if first_variant and first_variant.stock > 0 %}
+                        <form action="{% url 'add_to_cart' %}" method="post" class="m-0 w-100">
+                            {% csrf_token %}
+                            <input type="hidden" name="variant_id" value="{{ first_variant.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm w-100 py-2 btn-add-to-cart-card" style="font-size: 0.78rem; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #ff8c2e); border: none; color: white; font-weight: 700;">
+                                <i class="fa-solid fa-cart-plus me-1"></i> Sepete Ekle
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-secondary btn-sm w-100 py-2 text-muted" style="font-size: 0.78rem; border-radius: 8px; background-color: #f1f2f4; border: none; cursor: not-allowed; font-weight: 600;" disabled>
+                            Tükendi
+                        </button>
+                    {% endif %}
+                </div>
+                {% endwith %}
+            </div>
+        {% endfor %}
+
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 4rem 2rem; background-color: #ffffff; border: 1px solid #e6e6e6;">
+        <i class="fa-solid fa-box-open" style="font-size: 4rem; color: #ccc; margin-bottom: 1.5rem;"></i>
+        <h3 style="color: #333;">Aradığınız kriterlere uygun ürün bulunamadı.</h3>
+        <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Farklı filtreler seçmeyi veya aramayı temizlemeyi deneyin.</p>
+    </div>
+{% endif %}

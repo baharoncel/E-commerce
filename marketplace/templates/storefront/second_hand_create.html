@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}İkinci El İlan Ekle - PazarYeri{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 rounded-4 shadow-sm p-4 p-md-5">
+                <h2 class="fw-bold text-gradient mb-3">
+                    <i class="fa-solid fa-plus-circle text-warning me-2"></i> İkinci El İlan Oluştur
+                </h2>
+                <p class="text-muted mb-4">Kullanmadığınız kıyafet, elektronik eşya veya aksesuarları diğer müşterilere kolayca satın!</p>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">İlan Başlığı *</label>
+                        <input type="text" name="title" class="form-control rounded-3 py-2" placeholder="Örn: Az kullanılmış deri ceket" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Satış Fiyatı (TL) *</label>
+                            <input type="number" step="0.01" name="price" class="form-control rounded-3 py-2" placeholder="250.00" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Ürün Durumu *</label>
+                            <select name="condition" class="form-select rounded-3 py-2">
+                                <option value="NEW_LIKE">Sıfır Gibi (Etiketli / Kutulu)</option>
+                                <option value="GOOD" selected>Az Kullanılmış (Temiz)</option>
+                                <option value="FAIR">Kullanılmış (Makul)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">İlan Görseli</label>
+                        <input type="file" name="image" accept="image/*" class="form-control rounded-3">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted">Açıklama & Detaylar</label>
+                        <textarea name="description" rows="4" class="form-control rounded-3" placeholder="Ürünün bedeni, markası, kullanım durumu hakkında detay yazınız..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'second_hand_list' %}" class="btn btn-light rounded-pill px-4">İptal</a>
+                        <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2">
+                            <i class="fa-solid fa-paper-plane me-1"></i> İlanı Yayınla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

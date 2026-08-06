@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Fiyat Tekliflerim - PazarYeri{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold text-gradient mb-4">
+        <i class="fa-solid fa-handshake text-warning me-2"></i> Fiyat Teklifi Yönetimi
+    </h2>
+
+    <div class="row g-4">
+        <!-- Verdiğim Teklifler -->
+        <div class="col-lg-6">
+            <div class="card border-0 rounded-4 shadow-sm p-4 h-100">
+                <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-paper-plane me-2"></i> Verdiğim Teklifler</h4>
+                {% if submitted_offers %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr class="text-muted small">
+                                <th>Ürün / İlan</th>
+                                <th>Teklifim</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for offer in submitted_offers %}
+                            <tr>
+                                <td>
+                                    <strong class="text-dark">
+                                        {% if offer.product %}{{ offer.product.title }}{% else %}{{ offer.second_hand_item.title }}{% endif %}
+                                    </strong>
+                                </td>
+                                <td><span class="badge bg-light text-dark fs-6">{{ offer.offered_price }} TL</span></td>
+                                <td>
+                                    {% if offer.status == 'ACCEPTED' %}
+                                    <span class="badge bg-success">Kabul Edildi</span>
+                                    {% elif offer.status == 'REJECTED' %}
+                                    <span class="badge bg-danger">Reddedildi</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">Yanıt Bekliyor</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">Henüz herhangi bir ürüne teklif vermediniz.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Gelen Teklifler (Satıcı veya İkinci El Sahibi) -->
+        <div class="col-lg-6">
+            <div class="card border-0 rounded-4 shadow-sm p-4 h-100">
+                <h4 class="fw-bold text-success mb-3"><i class="fa-solid fa-inbox me-2"></i> Gelen Teklifler</h4>
+                {% if received_offers %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr class="text-muted small">
+                                <th>Alıcı</th>
+                                <th>Ürün</th>
+                                <th>Teklif</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for offer in received_offers %}
+                            <tr>
+                                <td><small class="fw-bold">{{ offer.buyer.username }}</small></td>
+                                <td>
+                                    <small class="text-dark">
+                                        {% if offer.product %}{{ offer.product.title }}{% else %}{{ offer.second_hand_item.title }}{% endif %}
+                                    </small>
+                                </td>
+                                <td><span class="badge bg-warning text-dark fw-bold">{{ offer.offered_price }} TL</span></td>
+                                <td>
+                                    {% if offer.status == 'PENDING' %}
+                                    <form method="POST" action="{% url 'respond_offer' offer.id %}" class="d-flex gap-1">
+                                        {% csrf_token %}
+                                        <button type="submit" name="action" value="accept" class="btn btn-success btn-sm rounded-pill"><i class="fa-solid fa-check"></i></button>
+                                        <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm rounded-pill"><i class="fa-solid fa-xmark"></i></button>
+                                    </form>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ offer.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">İlanlarınıza gelen herhangi bir fiyat teklifi yok.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

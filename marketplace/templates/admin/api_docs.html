@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}REST API & Swagger Dokümantasyonu | Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card p-4 mb-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 16px;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge bg-primary text-white mb-2" style="border-radius: 20px;">SWAGGER / OPENAPI SPEC</span>
+                <h2 class="fw-bold mb-1">Interactive REST API Dokümantasyonu</h2>
+                <p class="text-white-50 mb-0">Pazaryeri mobil ve web entegrasyonu için tanımlı tüm REST API uç noktaları.</p>
+            </div>
+            <a href="{% url 'store_index' %}" class="btn btn-outline-light rounded-pill">
+                <i class="fa-solid fa-house me-1"></i> Mağazaya Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="card p-4 border-0 shadow-sm rounded-4">
+        <h4 class="fw-bold mb-3"><i class="fa-solid fa-code text-primary me-2"></i>Aktif Uç Noktalar (Endpoints)</h4>
+        
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 100px;">Metot</th>
+                        <th style="width: 250px;">Endpoint</th>
+                        <th>Açıklama</th>
+                        <th style="width: 160px;">Yetkilendirme</th>
+                        <th style="width: 100px; text-align: right;">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ep in endpoints %}
+                    <tr>
+                        <td>
+                            <span class="badge {% if ep.method == 'GET' %}bg-success{% elif ep.method == 'POST' %}bg-primary{% else %}bg-warning{% endif %}" style="font-size: 0.85rem; padding: 0.4rem 0.75rem;">
+                                {{ ep.method }}
+                            </span>
+                        </td>
+                        <td><code>{{ ep.path }}</code></td>
+                        <td>{{ ep.desc }}</td>
+                        <td><small class="text-muted"><i class="fa-solid fa-key me-1"></i>{{ ep.auth }}</small></td>
+                        <td style="text-align: right;">
+                            {% if ep.method == 'GET' and '<' not in ep.path %}
+                                <a href="{{ ep.path }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Test Et <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a>
+                            {% else %}
+                                <span class="badge bg-light text-dark border">cURL / Postman</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

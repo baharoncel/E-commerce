@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load marketplace_tags %}
+
+{% block title %}Sepetim - PazarYeri{% endblock %}
+
+{% block content %}
+<h1 class="text-gradient" style="margin-bottom: 2rem;"><i class="fa-solid fa-cart-shopping"></i> Alışveriş Sepetim</h1>
+
+{% if grouped_cart %}
+<div style="display: grid; grid-template-columns: 1fr 350px; gap: 2rem; align-items: start;">
+    
+    <!-- Sol Sütun: Satıcı Bazlı Gruplanmış Sepet Ürünleri -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        {% for seller_id, group in grouped_cart.items %}
+            <div class="card" style="padding: 1.5rem; overflow-x: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 0; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-store"></i> Satıcı: {{ group.store_name }}
+                    </h3>
+                    <span class="user-badge badge-seller" style="font-size: 0.7rem;">Grup Toplamı: {{ group.seller_total|convert_price:request }}</span>
+                </div>
+                
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Ürün Görsel</th>
+                            <th>Ürün & Varyasyon</th>
+                            <th>Birim Fiyat</th>
+                            <th style="width: 150px;">Adet</th>
+                            <th>Toplam</th>
+                            <th style="width: 50px;">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in group.items %}
+                            <tr>
+                                <td>
+                                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1e1b4b, #311042); border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 1.25rem; overflow: hidden;">
+                                        {% if item.product.image %}
+                                            <img src="{{ item.product.image_url }}" alt="{{ item.product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            {% if item.product.category.parent.name == "Giyim & Moda" or item.product.category.name == "Giyim & Moda" %}
+                                                <i class="fa-solid fa-shirt text-gradient"></i>
+                                            {% elif item.product.category.parent.name == "Kozmetik & Makyaj" or item.product.category.name == "Kozmetik & Makyaj" %}
+                                                <i class="fa-solid fa-sparkles text-gradient"></i>
+                                            {% elif item.product.category.parent.name == "Takılar" or item.product.category.name == "Takılar" %}
+                                                <i class="fa-solid fa-gem text-gradient"></i>
+                                            {% elif item.product.category.parent.name == "Ayakkabı" or item.product.category.name == "Ayakkabı" %}
+                                                <i class="fa-solid fa-shoe-prints text-gradient"></i>
+                                            {% else %}
+                                                <i class="fa-solid fa-bag-shopping text-gradient"></i>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600;">{{ item.product.title }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                        {% if item.variant.color %}Renk: {{ item.variant.color }} | {% endif %}
+                                        {% if item.variant.size %}Beden: {{ item.variant.size }} | {% endif %}
+                                        {% if item.variant.size_number %}No: {{ item.variant.size_number }} | {% endif %}
+                                        SKU: {{ item.variant.sku }}
+                                    </div>
+                                </td>
+                                <td>{{ item.price|convert_price:request }}</td>
+                                <td>
+                                    <!-- Adet Güncelleme Formu -->
+                                    <form action="{% url 'update_cart_item' %}" method="post" style="display: flex; gap: 0.25rem; align-items: center;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
+                                        <input type="number" name="quantity" class="form-control" value="{{ item.quantity }}" min="1" max="{{ item.variant.stock }}" style="padding: 0.35rem 0.5rem; text-align: center;">
+                                        <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.5rem;" title="Miktarı Güncelle">
+                                            <i class="fa-solid fa-rotate"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td style="font-weight: 700; color: var(--text-primary);">{{ item.total_price|convert_price:request }}</td>
+                                <td>
+                                    <!-- Sepetten Silme Formu -->
+                                    <form action="{% url 'remove_from_cart' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="variant_id" value="{{ item.variant.id }}">
+                                        <button type="submit" class="btn btn-danger" style="padding: 0.35rem 0.5rem; background-color: transparent; border: none; color: var(--danger);" title="Sepetten Kaldır">
+                                            <i class="fa-solid fa-trash-can" style="font-size: 1.1rem;"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Sağ Sütun: Sipariş Özeti -->
+    <aside>
+        <div class="card" style="position: sticky; top: 100px; padding: 1.75rem;">
+            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">Sipariş Özeti</h3>
+            
+            <!-- Ücretsiz Kargo İlerleme Çubuğu -->
+            <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(234, 88, 12, 0.04)); border: 1px solid rgba(249, 115, 22, 0.25); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; font-size: 0.85rem; font-weight: 600;">
+                    <span style="color: var(--text-primary);"><i class="fa-solid fa-truck-fast text-gradient"></i> Ücretsiz Kargo</span>
+                    {% if subtotal >= 500 %}
+                        <span style="color: #10b981; font-weight: 700;">Kargo Bedava! 🎉</span>
+                    {% else %}
+                        <span style="color: #f97316; font-size: 0.8rem;">500 ₺ Limiti</span>
+                    {% endif %}
+                </div>
+                <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.08); border-radius: 4px; overflow: hidden; margin-bottom: 0.4rem;">
+                    <div style="height: 100%; width: {% if subtotal >= 500 %}100%{% else %}{% widthratio subtotal 500 100 %}%{% endif %}; background: linear-gradient(90deg, #f97316, #ea580c); transition: width 0.4s ease; border-radius: 4px;"></div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
+                    {% if subtotal >= 500 %}
+                        Siparişiniz için kargo ücreti alınmayacaktır.
+                    {% else %}
+                        Ücretsiz kargo için <strong>{{ 500|sub:subtotal|convert_price:request }}</strong> tutarında ürün ekleyin.
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+            <!-- PazarPuan Sadakat Cüzdanı Harcama Kutusu -->
+            <div class="card mb-3 p-3 border-0 rounded-4 shadow-sm" style="background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(168,85,247,0.08)); border: 1px solid rgba(99,102,241,0.25) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold small text-dark d-flex align-items-center gap-1">
+                        <i class="fa-solid fa-coins text-warning fs-5"></i> PazarPuan Cüzdanı
+                    </span>
+                    <span class="badge bg-primary rounded-pill small">1 PazarPuan = 1 TL</span>
+                </div>
+                <div class="small text-muted mb-2">
+                    Mevcut Bakiyeniz: <strong class="text-primary">{{ user.reward_wallet.balance|default:"0.00" }} PazarPuan</strong>
+                </div>
+                <form action="{% url 'apply_points_cart' %}" method="post" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <input type="number" step="1" min="1" max="{{ user.reward_wallet.balance|default:'0' }}" name="points" class="form-control form-control-sm rounded-pill" placeholder="PazarPuan Miktarı" value="{{ request.session.applied_points|default:'' }}">
+                    <button type="submit" class="btn btn-warning btn-sm rounded-pill font-weight-bold text-dark text-nowrap px-3">
+                        <i class="fa-solid fa-bolt"></i> İndirime Çevir
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem;">
+                <span class="text-muted">Toplam Ürün Adedi:</span>
+                <span style="font-weight: 600;">{{ cart_count }} adet</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem;">
+                <span class="text-muted">Ara Toplam:</span>
+                <span>{{ subtotal|convert_price:request }}</span>
+            </div>
+
+            <div id="couponSummary" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem;">
+                <span class="text-muted">İndirim:</span>
+                <span id="discountAmount">{{ discount_amount|convert_price:request }}</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: bold; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <span>Genel Toplam:</span>
+                <span id="finalTotal" class="text-gradient">{{ final_total|convert_price:request }}</span>
+            </div>
+
+            <form id="couponForm" class="mb-3" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                {% csrf_token %}
+                <input type="text" id="couponCode" name="coupon_code" class="form-control" placeholder="Kupon kodu girin" value="{{ applied_coupon_code|default:'' }}">
+                <button type="submit" class="btn btn-outline" style="padding: 0.65rem 0.9rem;">Uygula</button>
+            </form>
+            <div id="couponMessage" class="small text-muted" style="min-height: 1.2rem;">
+                {% if coupon_error %}<span class="text-danger">{{ coupon_error }}</span>{% endif %}
+            </div>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'checkout_view' %}" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                    Ödemeye Geç <i class="fa-solid fa-credit-card"></i>
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'checkout_view' %}" class="btn btn-secondary" style="width: 100%; padding: 1rem;">
+                    Giriş Yaparak Satın Al <i class="fa-solid fa-right-to-bracket"></i>
+                </a>
+            {% endif %}
+            
+            <a href="{% url 'store_index' %}" class="btn btn-outline" style="width: 100%; margin-top: 0.75rem; font-size: 0.9rem; padding: 0.75rem;">
+                <i class="fa-solid fa-arrow-left-long"></i> Alışverişe Devam Et
+            </a>
+        </div>
+    </aside>
+
+</div>
+
+<!-- Akıllı Tavsiye Sistemi: Sepet Önerileri -->
+<div style="margin-top: 3rem; margin-bottom: 2rem;">
+    <h2 style="border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: #333; font-weight: 800;">
+        <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary);"></i> Sepetinizdekilerle Uyumlu Önerilen Ürünler
+    </h2>
+    <div class="grid-3" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.25rem;">
+        {% for rec_prod in recommended_products %}
+            <div class="card product-card" style="background-color: #ffffff; border: 1px solid #e6e6e6; border-radius: 8px; overflow: hidden; padding: 0.75rem; display: flex; flex-direction: column;">
+                <div class="product-image-placeholder" style="height: 160px; margin-bottom: 0.5rem; font-size: 2.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f6f6f6; border-radius: 6px;">
+                    {% if rec_prod.image %}
+                        <img src="{{ rec_prod.image_url }}" alt="{{ rec_prod.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <i class="fa-solid fa-shirt" style="color: #ccc; font-size: 2.5rem;"></i>
+                    {% endif %}
+                </div>
+                <div class="product-seller-info" style="font-size: 0.75rem; margin-bottom: 0.25rem; font-weight: 700; color: #666;">
+                    <i class="fa-solid fa-store"></i> {{ rec_prod.seller.store_name }}
+                </div>
+                <h4 style="font-size: 0.88rem; margin-bottom: 0.25rem; font-weight: 600; color: #333; min-height: 2.2rem;">{{ rec_prod.title }}</h4>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem;">
+                    <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">{{ rec_prod.base_price|convert_price:request }}</span>
+                    <a href="{% url 'product_detail' rec_prod.id %}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 4px;">İncele</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="card" style="text-align: center; padding: 5rem 2rem;">
+    <i class="fa-solid fa-basket-shopping" style="font-size: 5rem; color: var(--text-secondary); margin-bottom: 2rem;"></i>
+    <h2>Sepetiniz henüz boş!</h2>
+    <p class="text-muted" style="margin-top: 0.5rem; margin-bottom: 2rem;">Vitrindeki binlerce kaliteli ürünü inceleyip sepetinize ekleyebilirsiniz.</p>
+    <a href="{% url 'store_index' %}" class="btn btn-primary">Alışverişe Başla <i class="fa-solid fa-bag-shopping"></i></a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('couponForm');
+        const messageBox = document.getElementById('couponMessage');
+        const discountAmount = document.getElementById('discountAmount');
+        const finalTotal = document.getElementById('finalTotal');
+
+        if (!form) return;
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const code = document.getElementById('couponCode').value.trim();
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+            fetch('{% url "apply_coupon" %}', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: new URLSearchParams({ coupon_code: code })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    discountAmount.textContent = formatCurrency(parseFloat(data.discount_amount));
+                    finalTotal.textContent = formatCurrency(parseFloat(data.final_total));
+                    messageBox.innerHTML = '<span class="text-success">' + data.message + '</span>';
+                } else {
+                    discountAmount.textContent = formatCurrency(0.00);
+                    finalTotal.textContent = formatCurrency(parseFloat('{{ subtotal }}'));
+                    messageBox.innerHTML = '<span class="text-danger">' + data.message + '</span>';
+                }
+            })
+            .catch(() => {
+                messageBox.innerHTML = '<span class="text-danger">İstek sırasında bir hata oluştu.</span>';
+            });
+        });
+    });
+</script>
+{% endblock %}

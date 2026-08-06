@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yeni Satış Bildirimi - Marketplace</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .email-container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .header { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: #ffffff; padding: 25px 20px; text-align: center; }
+        .content { padding: 30px 25px; }
+        .badge { display: inline-block; background-color: #dcfce7; color: #15803d; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 13px; margin-bottom: 20px; }
+        .table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .table th, .table td { padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 14px; text-align: left; }
+        .footer { background-color: #f8fafc; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1 style="margin:0; font-size:22px;">🎉 Tebrikler! Yeni Satış Yapıldı</h1>
+        </div>
+        <div class="content">
+            <h3>Sayın {{ sub_order.seller.store_name }},</h3>
+            <p>Mağazanızdan yeni bir sipariş verildi. Detaylar aşağıdadır:</p>
+
+            <div class="badge">Alt Sipariş No: #{{ sub_order.id }}</div>
+
+            <table class="table">
+                <thead>
+                    <tr><th>Ürün</th><th>Adet</th><th>Fiyat</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in sub_order.items.all %}
+                    <tr>
+                        <td>{{ item.product.title }} {% if item.variant %}({{ item.variant }}){% endif %}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.get_total_item_price }} TL</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p style="margin-top:15px; font-weight:bold;">Satıcı Hak Ediş (Komisyon Düşülmüş): <span style="color:#16a34a;">{{ sub_order.seller_payout }} TL</span></p>
+            <p style="font-size:13px; color:#64748b;">Lütfen siparişi hazırlayıp en kısa sürede kargoya veriniz.</p>
+        </div>
+        <div class="footer">&copy; 2026 PazarYeri Satıcı Portalı</div>
+    </div>
+</body>
+</html>

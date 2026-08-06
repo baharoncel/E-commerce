@@ -1,0 +1,1212 @@
+{% extends 'base.html' %}
+
+{% block title %}Satıcı Paneli - PazarYeri{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    .stat-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        box-shadow: var(--shadow) !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        position: relative;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: var(--shadow-lg) !important;
+        border-color: var(--primary) !important;
+    }
+    .stat-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+    .stat-card:hover .stat-icon-wrapper {
+        transform: scale(1.1) rotate(-5deg);
+    }
+    .stat-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .stat-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .stat-val {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-top: 0.15rem;
+        letter-spacing: -0.02em;
+    }
+    
+    /* Tabs styling */
+    .dashboard-tabs-card {
+        padding: 0.5rem !important;
+        border-radius: 16px !important;
+        background-color: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+        margin-bottom: 2.5rem;
+    }
+    .filter-list {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        flex-direction: row !important;
+        gap: 0.5rem !important;
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+    .filter-item {
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        display: inline-block !important;
+        margin: 0 !important;
+    }
+    .filter-item a {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.6rem !important;
+        padding: 0.75rem 1.25rem !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        transition: all 0.2s ease !important;
+        border-radius: 12px !important;
+        text-decoration: none !important;
+    }
+    .filter-item:hover a {
+        color: var(--primary) !important;
+        background-color: rgba(242, 122, 26, 0.05) !important;
+    }
+    .filter-item.active a {
+        color: #fff !important;
+        background: linear-gradient(135deg, var(--primary), #d96200) !important;
+        box-shadow: 0 4px 12px rgba(242, 122, 26, 0.25) !important;
+    }
+    
+    /* Tables styling */
+    .cart-table {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 0.5rem !important;
+        margin-top: -0.5rem !important;
+    }
+    .cart-table th {
+        font-weight: 700 !important;
+        font-size: 0.8rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: var(--text-secondary) !important;
+        padding: 1rem !important;
+        border: none !important;
+    }
+    .cart-table td {
+        padding: 1.25rem 1rem !important;
+        background-color: var(--bg-main) !important;
+        border-top: 1px solid var(--border-color) !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        vertical-align: middle !important;
+        transition: all 0.2s ease !important;
+    }
+    .cart-table td:first-child {
+        border-left: 1px solid var(--border-color) !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+    }
+    .cart-table td:last-child {
+        border-right: 1px solid var(--border-color) !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+    }
+    .cart-table tr:hover td {
+        background-color: var(--bg-card-hover) !important;
+    }
+    
+    /* Status Badges */
+    .badge-status {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.35rem !important;
+        padding: 0.35rem 0.75rem !important;
+        border-radius: 20px !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.03em !important;
+    }
+    .status-pending { background-color: rgba(245, 158, 11, 0.12) !important; color: #d97706 !important; }
+    .status-shipped { background-color: rgba(59, 130, 246, 0.12) !important; color: #2563eb !important; }
+    .status-delivered { background-color: rgba(34, 197, 94, 0.12) !important; color: #16a34a !important; }
+    .status-cancelled { background-color: rgba(239, 68, 68, 0.12) !important; color: #dc2626 !important; }
+    
+    /* Chat Design */
+    .chat-layout {
+        display: grid !important;
+        grid-template-columns: 240px 1fr !important;
+        gap: 1.5rem !important;
+        flex-grow: 1 !important;
+        min-height: 0 !important;
+    }
+    .chat-contacts-list {
+        border-right: 1px solid var(--border-color) !important;
+        padding-right: 1rem !important;
+        overflow-y: auto !important;
+    }
+    .chat-contact-item {
+        margin-bottom: 0.5rem !important;
+    }
+    .chat-contact-item a {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 10px !important;
+        color: var(--text-primary) !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+    }
+    .chat-contact-item:hover a {
+        background-color: var(--bg-main) !important;
+        color: var(--primary) !important;
+    }
+    .chat-contact-item.active a {
+        background-color: rgba(242, 122, 26, 0.08) !important;
+        color: var(--primary) !important;
+    }
+    .chat-messages-container {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+        background-color: var(--bg-main) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    .chat-messages-box {
+        flex-grow: 1 !important;
+        overflow-y: auto !important;
+        padding: 1rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+        margin-bottom: 1rem !important;
+        border-radius: 12px !important;
+        background-color: rgba(0,0,0,0.02) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    body[data-theme="dark"] .chat-messages-box {
+        background-color: rgba(255,255,255,0.02) !important;
+    }
+    .chat-bubble {
+        max-width: 75% !important;
+        padding: 0.75rem 1.1rem !important;
+        border-radius: 14px !important;
+        font-size: 0.9rem !important;
+        line-height: 1.45 !important;
+        position: relative !important;
+        animation: chatBubbleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .chat-bubble.sent {
+        align-self: flex-end !important;
+        background: linear-gradient(135deg, var(--primary), #d96200) !important;
+        color: #fff !important;
+        border-bottom-right-radius: 2px !important;
+        box-shadow: 0 4px 10px rgba(242, 122, 26, 0.15) !important;
+    }
+    .chat-bubble.received {
+        align-self: flex-start !important;
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+        border-bottom-left-radius: 2px !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow) !important;
+    }
+    .chat-time {
+        font-size: 0.65rem !important;
+        opacity: 0.7 !important;
+        text-align: right !important;
+        margin-top: 0.35rem !important;
+    }
+    @keyframes chatBubbleIn {
+        from { opacity: 0; transform: translateY(10px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="text-gradient" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-chart-line"></i> Mağaza Yönetim Paneli</h1>
+        <p class="text-muted" style="margin-bottom: 0;">Mağaza: <strong>{{ seller.store_name }}</strong> | IBAN: <code>{{ seller.iban }}</code> | Komisyon Oranı: <code>%{{ seller.commission_rate }}</code></p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <a href="{% url 'generate_seller_payout_pdf' %}" class="btn btn-outline-danger rounded-pill px-3 py-2 d-flex align-items-center gap-2 fw-bold" title="Komisyon Düşülmüş Banka Dekontu PDF">
+            <i class="fa-solid fa-file-pdf"></i> Hakediş Dekontu (.PDF)
+        </a>
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-3 py-2 d-flex align-items-center gap-2 fw-bold" data-bs-toggle="modal" data-bs-target="#bulkImportModal">
+            <i class="fa-solid fa-file-import"></i> Toplu Ürün Yükle (.CSV)
+        </button>
+        <a href="{% url 'seller_export_orders_csv' %}" class="btn btn-outline-success rounded-pill px-3 py-2 d-flex align-items-center gap-2 fw-bold">
+            <i class="fa-solid fa-file-excel"></i> Rapor İndir (.CSV)
+        </a>
+        <a href="{% url 'seller_add_product' %}" class="btn btn-primary rounded-pill px-3 py-2 d-flex align-items-center gap-2 fw-bold" style="background: var(--gradient-primary); border: none;">
+            <i class="fa-solid fa-circle-plus"></i> Yeni Ürün Ekle
+        </a>
+    </div>
+</div>
+
+<!-- İstatistik Kartları -->
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background-color: rgba(242, 122, 26, 0.1); color: var(--secondary);">
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+        <div class="stat-info">
+            <span class="stat-label">Toplam Brüt Satış</span>
+            <span class="stat-val">{{ total_sales }} TL</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background-color: rgba(251, 191, 36, 0.1); color: var(--accent);">
+            <i class="fa-solid fa-receipt"></i>
+        </div>
+        <div class="stat-info">
+            <span class="stat-label">Komisyon Kesintisi</span>
+            <span class="stat-val">{{ total_commission }} TL</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background-color: rgba(34, 197, 94, 0.1); color: var(--success);">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+        <div class="stat-info">
+            <span class="stat-label">Net Hak Ediş</span>
+            <span class="stat-val" style="color: var(--success);">{{ total_payout }} TL</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon-wrapper" style="background-color: rgba(59, 130, 246, 0.1); color: var(--info);">
+            <i class="fa-solid fa-box-open"></i>
+        </div>
+        <div class="stat-info">
+            <span class="stat-label">Bekleyen Gönderiler</span>
+            <span class="stat-val" style="color: var(--info);">{{ pending_shipment_count }} Sipariş</span>
+        </div>
+    </div>
+</div>
+
+{% if low_stock_variants %}
+<div class="alert alert-warning border-0 shadow-sm rounded-4 mb-4 p-3 d-flex align-items-center justify-content-between" style="background-color: rgba(245, 158, 11, 0.12); border-left: 4px solid #f59e0b !important;">
+    <div class="d-flex align-items-center gap-3">
+        <i class="fa-solid fa-triangle-exclamation text-warning fs-3"></i>
+        <div>
+            <h6 class="fw-bold mb-1 text-dark">Kritik Stok Uyarısı ({{ low_stock_variants.count }} Varyasyon)</h6>
+            <small class="text-muted">Aşağıdaki ürünlerin stok seviyesi 3 veya daha azdır. Lütfen stok güncellemesi yapınız.</small>
+        </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        {% for v in low_stock_variants|slice:":3" %}
+        <span class="badge bg-warning text-dark border"><i class="fa-solid fa-box me-1"></i>{{ v.product.title|truncatechars:20 }} (Stok: {{ v.stock }})</span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Grafik Analiz Bölümü -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Satış Grafiği -->
+    <div class="card" style="padding: 1.5rem;">
+        <h4 style="margin-bottom: 1rem; font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+            <i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Son 7 Günlük Satış Analizi
+        </h4>
+        <div style="height: 250px; position: relative;">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- En Çok Satan Ürünler -->
+    <div class="card" style="padding: 1.5rem;">
+        <h4 style="margin-bottom: 1rem; font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+            <i class="fa-solid fa-fire" style="color: #ef4444;"></i> En Çok Satan 5 Ürün
+        </h4>
+        <div style="height: 250px; position: relative;">
+            <canvas id="productsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Sekme Seçiciler -->
+<div class="card dashboard-tabs-card">
+    <ul class="filter-list" id="sellerDashboardTabs">
+        <li class="filter-item active" data-tab="orders">
+            <a href="#orders"><i class="fa-solid fa-truck-ramp-box"></i> Sipariş Yönetimi</a>
+        </li>
+        <li class="filter-item" data-tab="returns">
+            <a href="#returns"><i class="fa-solid fa-rotate-left"></i> İade Talepleri</a>
+        </li>
+        <li class="filter-item" data-tab="chat">
+            <a href="#chat"><i class="fa-solid fa-comments"></i> Müşteri Canlı Destek Chat</a>
+        </li>
+        <li class="filter-item" data-tab="products">
+            <a href="#products"><i class="fa-solid fa-boxes-stacked"></i> Ürünlerim & Varyasyonlar</a>
+        </li>
+        <li class="filter-item" data-tab="coupons">
+            <a href="#coupons"><i class="fa-solid fa-ticket"></i> İndirim Kuponlarım</a>
+        </li>
+        <li class="filter-item" data-tab="reviews">
+            <a href="#reviews"><i class="fa-solid fa-star"></i> Ürün Yorumları</a>
+        </li>
+    </ul>
+</div>
+
+<!-- SEKMELERİN İÇERİKLERİ -->
+
+<!-- Sekme 1: Sipariş Yönetimi -->
+<div class="seller-tab-content" id="seller-orders">
+    <div class="card" style="padding: 1.75rem;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-truck-ramp-box"></i> Gelen Alt Siparişler (Sub-Orders)
+        </h3>
+        {% if sub_orders %}
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                {% for so in sub_orders %}
+                    <div style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <div>
+                                <span style="font-weight: bold; color: var(--secondary);">Alt Sipariş #{{ so.id }}</span>
+                                <small class="text-muted" style="margin-left: 0.5rem;">(Ana Sipariş #{{ so.parent_order.id }}) - Müşteri: <strong>{{ so.parent_order.customer.username }}</strong></small>
+                            </div>
+                            <div>
+                                <span class="badge-status {% if so.status == 'PENDING' %}status-pending{% elif so.status == 'SHIPPED' %}status-shipped{% elif so.status == 'DELIVERED' %}status-delivered{% else %}status-cancelled{% endif %}">
+                                    {{ so.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); padding: 0.5rem 0; margin-bottom: 0.75rem;">
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.25rem;">
+                                {% for item in so.items.all %}
+                                    <li>
+                                        <i class="fa-solid fa-caret-right" style="color: var(--text-secondary);"></i> 
+                                        <strong>{{ item.product.title }}</strong> 
+                                        {% if item.variant %}<small class="text-muted">({{ item.variant }})</small>{% endif %} 
+                                        x {{ item.quantity }} - {{ item.price }} TL
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div style="font-size: 0.85rem;" class="text-muted">
+                                Tutar: <strong>{{ so.subtotal }} TL</strong> | 
+                                Komisyon (%{{ seller.commission_rate }}): <span style="color: var(--danger);">{{ so.commission_fee }} TL</span> | 
+                                Hak Ediş: <span style="color: var(--success); font-weight: bold;">{{ so.seller_payout }} TL</span>
+                            </div>
+                            
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <!-- Müşteriyle Sohbet Et Butonu -->
+                                <a href="?tab=chat&chat_with={{ so.parent_order.customer.id }}#chat" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-comment-dots"></i> Mesaj Gönder
+                                </a>
+
+                                <a href="{% url 'generate_order_invoice' so.parent_order.id %}" target="_blank" class="btn btn-outline-info rounded-pill" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-file-invoice"></i> e-Fatura
+                                </a>
+
+                                <form action="{% url 'update_suborder_status' so.id %}" method="post" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: stretch; min-width: 260px;">
+                                    {% csrf_token %}
+                                    <div style="display:flex; gap:0.5rem;">
+                                        <select name="status" class="form-control" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; width: 150px;">
+                                            <option value="PENDING" {% if so.status == 'PENDING' %}selected{% endif %}>Hazırlanıyor</option>
+                                            <option value="SHIPPED" {% if so.status == 'SHIPPED' %}selected{% endif %}>Kargoya Verildi</option>
+                                            <option value="DELIVERED" {% if so.status == 'DELIVERED' %}selected{% endif %}>Teslim Edildi</option>
+                                            <option value="CANCELLED" {% if so.status == 'CANCELLED' %}selected{% endif %}>İptal Edildi</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">Güncelle</button>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem;">
+                                        <select name="shipping_company" class="form-control" style="padding: 0.35rem 0.5rem; font-size: 0.85rem;">
+                                            <option value="">Kargo Firması Seçin</option>
+                                            <option value="Yurtiçi" {% if so.parent_order.shipping_company == 'Yurtiçi' %}selected{% endif %}>Yurtiçi</option>
+                                            <option value="Aras Kargo" {% if so.parent_order.shipping_company == 'Aras Kargo' %}selected{% endif %}>Aras Kargo</option>
+                                            <option value="Trendyol Express" {% if so.parent_order.shipping_company == 'Trendyol Express' %}selected{% endif %}>Trendyol Express</option>
+                                        </select>
+                                        <input type="text" name="tracking_number" class="form-control" placeholder="Takip No" value="{{ so.parent_order.tracking_number|default:'' }}" style="padding: 0.35rem 0.5rem; font-size: 0.85rem;">
+                                    </div>
+                                    <input type="date" name="estimated_delivery_date" class="form-control" value="{{ so.parent_order.estimated_delivery_date|date:'Y-m-d' }}" style="padding: 0.35rem 0.5rem; font-size: 0.85rem;">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 3rem 0;" class="text-muted">
+                <i class="fa-solid fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p>Henüz gelen sipariş bulunmuyor.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Sekme 2: İade Talepleri -->
+<div class="seller-tab-content" id="seller-returns" style="display: none;">
+    <div class="card" style="padding: 1.75rem;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-rotate-left"></i> Gelen Kolay İade Talepleri
+        </h3>
+        {% if return_requests %}
+            <div style="overflow-x: auto;">
+                <table class="cart-table">
+                    <thead>
+                        <tr style="color: var(--text-secondary);">
+                            <th>Alt Sipariş / Müşteri</th>
+                            <th>İade Edilecek Ürün</th>
+                            <th>Nedeni / Açıklaması</th>
+                            <th>Talep Tarihi</th>
+                            <th style="width: 250px; text-align: right;">Durum / İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in return_requests %}
+                            <tr>
+                                <td>
+                                    <strong>Alt Sipariş #{{ req.order_item.sub_order.id }}</strong>
+                                    <div style="font-size: 0.8rem;" class="text-muted">Alıcı: {{ req.order_item.sub_order.parent_order.customer.username }}</div>
+                                </td>
+                                <td>
+                                    <strong>{{ req.order_item.product.title }}</strong>
+                                    {% if req.order_item.variant %}<div style="font-size: 0.8rem;" class="text-muted">({{ req.order_item.variant }})</div>{% endif %}
+                                </td>
+                                <td>{{ req.reason }}</td>
+                                <td class="text-muted" style="font-size: 0.85rem;">{{ req.created_at|date:"d/m/Y H:i" }}</td>
+                                <td style="text-align: right;">
+                                    {% if req.status == 'PENDING' %}
+                                        <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
+                                            <form action="{% url 'seller_handle_return' req.id %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="APPROVE">
+                                                <button type="submit" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                                                    <i class="fa-solid fa-check"></i> Onayla
+                                                </button>
+                                            </form>
+                                            <form action="{% url 'seller_handle_return' req.id %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="REJECT">
+                                                <button type="submit" class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; background-color: var(--danger); border: none;">
+                                                    <i class="fa-solid fa-xmark"></i> Reddet
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="badge-status {% if req.status == 'APPROVED' %}status-delivered{% else %}status-cancelled{% endif %}">
+                                            {{ req.get_status_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 3rem 0;" class="text-muted">
+                <i class="fa-solid fa-clock-rotate-left" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p>Henüz gelen bir iade talebi bulunmuyor.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Sekme 3: Müşteri Canlı Destek Chat -->
+<div class="seller-tab-content" id="seller-chat" style="display: none;">
+    <div class="card" style="padding: 1.75rem; height: 500px; display: flex; flex-direction: column; border-radius: 16px;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem; font-weight: 700;">
+            <i class="fa-solid fa-comments"></i> Canlı Müşteri Destek Sohbeti
+        </h3>
+        
+        <div class="chat-layout">
+            <!-- Müşteriler Listesi -->
+            <div class="chat-contacts-list">
+                <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05rem; color: var(--text-secondary); margin-bottom: 1rem; font-weight: 700;">Müşteriler</h4>
+                {% if contacts %}
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                        {% for contact in contacts %}
+                            <li class="chat-contact-item {% if active_contact.id == contact.id %}active{% endif %}">
+                                <a href="?tab=chat&chat_with={{ contact.id }}#chat">
+                                    <i class="fa-solid fa-user-circle" style="font-size: 1.25rem;"></i>
+                                    <span>{{ contact.username }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-top: 2rem;">Henüz bir mesajlaşma bulunmuyor.</p>
+                {% endif %}
+            </div>
+
+            <!-- Mesaj Ekranı -->
+            <div style="display: flex; flex-direction: column; height: 100%;">
+                {% if active_contact %}
+                    <div class="chat-messages-box" id="sellerChatBox">
+                        {% for msg in chat_messages %}
+                            <div data-message-id="{{ msg.id }}" class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                                <div>{{ msg.message }}</div>
+                                <div class="chat-time">
+                                    {{ msg.created_at|date:"H:i" }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <form action="{% url 'send_chat_message' %}" method="post" id="chatSendForm" style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                        {% csrf_token %}
+                        <input type="hidden" name="recipient_id" id="recipientIdInput" value="{{ active_contact.id }}">
+                        <textarea name="message" id="chatMessageInput" class="form-control" rows="2" placeholder="Cevabınızı yazın..." style="resize: none;" required></textarea>
+                        <button type="submit" class="btn btn-secondary" style="padding: 0.75rem 1.25rem;"><i class="fa-solid fa-paper-plane"></i> Cevapla</button>
+                    </form>
+                {% else %}
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;" class="text-muted">
+                        <i class="fa-solid fa-envelope-open-text" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <p>Müşterilerinizin mesajlarını görmek ve onlara cevap yazmak için sol menüden bir müşteri seçin.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sekme 4: Ürünlerim & Varyasyonlar -->
+<div class="seller-tab-content" id="seller-products" style="display: none;">
+    <div class="card" style="padding: 1.75rem;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-boxes-stacked"></i> Ürünlerim ve Varyasyonları
+        </h3>
+        {% if products %}
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                {% for prod in products %}
+                    <div style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin-bottom: 0.25rem; font-size: 1.1rem; color: var(--secondary);">{{ prod.title }}</h4>
+                                <div class="text-muted" style="font-size: 0.85rem;">Kategori: {{ prod.category.name }} | Taban Fiyat: <strong>{{ prod.base_price }} TL</strong></div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 0.75rem; margin-top: 0.75rem;">
+                            <strong>Aktif Varyasyonlar:</strong>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
+                                <thead>
+                                    <tr style="text-align: left; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.03);">
+                                        <th style="padding: 0.35rem 0;">Renk</th>
+                                        <th style="padding: 0.35rem 0;">Beden / Numara</th>
+                                        <th style="padding: 0.35rem 0;">Stok Durumu</th>
+                                        <th style="padding: 0.35rem 0;">Varyasyon Fiyatı</th>
+                                        <th style="padding: 0.35rem 0;">SKU Kodu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for var in prod.variants.all %}
+                                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.01);">
+                                            <td style="padding: 0.35rem 0;">{{ var.color|default:"-" }}</td>
+                                            <td style="padding: 0.35rem 0;">
+                                                {% if var.size %}{{ var.size }}{% endif %}
+                                                {% if var.size_number %}No: {{ var.size_number }}{% endif %}
+                                                {% if not var.size and not var.size_number %}-{% endif %}
+                                            </td>
+                                            <td style="padding: 0.35rem 0; font-weight: bold; color: {% if var.stock > 0 %}var(--success){% else %}var(--danger){% endif %};">{{ var.stock }}</td>
+                                            <td style="padding: 0.35rem 0;">{{ var.get_price }} TL</td>
+                                            <td style="padding: 0.35rem 0;"><code>{{ var.sku }}</code></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 3rem 0;" class="text-muted">
+                <i class="fa-solid fa-boxes-packing" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p>Mağazanızda ürün bulunmuyor. Hemen yeni ürün yükleyin!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Sekme: İndirim Kuponlarım -->
+<div class="seller-tab-content" id="seller-coupons" style="display: none;">
+    <div class="card" style="padding: 1.75rem; margin-bottom: 2rem; border-radius: 16px;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem; font-weight: 700;">
+            <i class="fa-solid fa-plus-circle" style="color: var(--primary);"></i> Yeni Satıcı Kuponu Oluştur
+        </h3>
+        <form action="{% url 'seller_create_coupon' %}" method="post" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end;">
+            {% csrf_token %}
+            <div>
+                <label class="form-label">Kupon Kodu</label>
+                <input type="text" name="code" class="form-control" placeholder="Örn: YAZ20" style="text-transform: uppercase;" required>
+            </div>
+            <div>
+                <label class="form-label">İndirim Tipi</label>
+                <select name="discount_type" class="form-select form-control">
+                    <option value="PERCENTAGE">Yüzdelik (%)</option>
+                    <option value="FIXED_AMOUNT">Sabit Tutar (TL)</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">İndirim Değeri</label>
+                <input type="number" name="discount_value" class="form-control" step="0.01" placeholder="Örn: 20" required>
+            </div>
+            <div>
+                <label class="form-label">Min. Sepet Tutarı (TL)</label>
+                <input type="number" name="minimum_order_amount" class="form-control" step="0.01" value="0.00">
+            </div>
+            <div>
+                <label class="form-label">Kullanım Limiti</label>
+                <input type="number" name="usage_limit" class="form-control" value="100" min="1">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; height: 42px;"><i class="fa-solid fa-check"></i> Kupon Oluştur</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card" style="padding: 1.75rem; border-radius: 16px;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem; font-weight: 700;">
+            <i class="fa-solid fa-ticket"></i> Aktif Mağaza Kuponlarınız
+        </h3>
+        {% if coupons %}
+            <div style="overflow-x: auto;">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Kupon Kodu</th>
+                            <th>İndirim</th>
+                            <th>Min. Sepet Tutarı</th>
+                            <th>Kullanım Durumu</th>
+                            <th>Oluşturulma Tarihi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in coupons %}
+                            <tr>
+                                <td><strong style="color: var(--primary); font-size: 1.05rem;">{{ c.code }}</strong></td>
+                                <td>
+                                    {% if c.discount_type == 'PERCENTAGE' %}
+                                        %{{ c.discount_value }} İndirim
+                                    {% else %}
+                                        {{ c.discount_value }} TL İndirim
+                                    {% endif %}
+                                </td>
+                                <td>{{ c.minimum_order_amount }} TL</td>
+                                <td><code>{{ c.used_count }} / {{ c.usage_limit }}</code></td>
+                                <td class="text-muted" style="font-size: 0.85rem;">{{ c.created_at|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2.5rem 0;" class="text-muted">
+                <i class="fa-solid fa-ticket" style="font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.5;"></i>
+                <p>Henüz oluşturulmuş bir kuponunuz bulunmuyor.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Sekme 5: Ürün Yorumları -->
+<div class="seller-tab-content" id="seller-reviews" style="display: none;">
+    <div class="card" style="padding: 1.75rem; margin-bottom: 2rem;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-clock"></i> Onay Bekleyen Müşteri Yorumları
+        </h3>
+        {% if pending_reviews %}
+            <div style="overflow-x: auto;">
+                <table class="cart-table" style="width:100%;">
+                    <thead>
+                        <tr style="color: var(--text-secondary); text-align: left; border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 0.75rem;">Ürün</th>
+                            <th style="padding: 0.75rem;">Müşteri</th>
+                            <th style="padding: 0.75rem;">Puan</th>
+                            <th style="padding: 0.75rem;">Yorum</th>
+                            <th style="padding: 0.75rem;">Tarih</th>
+                            <th style="padding: 0.75rem; text-align: right;">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in pending_reviews %}
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 0.75rem;"><strong>{{ review.product.title }}</strong></td>
+                                <td style="padding: 0.75rem;"><code>{{ review.user.username }}</code></td>
+                                <td style="padding: 0.75rem;">
+                                    <span style="color: #f59e0b;">
+                                        {% for i in '12345' %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fa-solid fa-star"></i>
+                                            {% else %}
+                                                <i class="fa-regular fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </td>
+                                <td style="padding: 0.75rem;">{{ review.comment|default:"*Yorumsuz puan verildi*" }}</td>
+                                <td style="padding: 0.75rem; font-size: 0.85rem;" class="text-muted">{{ review.created_at|date:"d/m/Y H:i" }}</td>
+                                <td style="padding: 0.75rem; text-align: right;">
+                                    <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
+                                        <form action="{% url 'seller_handle_review' review.id %}" method="post" style="margin:0;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="APPROVE">
+                                            <button type="submit" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; background: var(--success); border: none;">
+                                                <i class="fa-solid fa-check"></i> Onayla
+                                            </button>
+                                        </form>
+                                        <form action="{% url 'seller_handle_review' review.id %}" method="post" style="margin:0;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="REJECT">
+                                            <button type="submit" class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; background-color: var(--danger); border: none;">
+                                                <i class="fa-solid fa-xmark"></i> Reddet / Sil
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem 0;" class="text-muted">
+                <i class="fa-solid fa-face-smile" style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--success);"></i>
+                <p>Onay bekleyen yeni yorum bulunmuyor.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card" style="padding: 1.75rem;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem; color: var(--success);">
+            <i class="fa-solid fa-circle-check"></i> Onaylanmış Müşteri Yorumları
+        </h3>
+        {% if approved_reviews %}
+            <div style="overflow-x: auto;">
+                <table class="cart-table" style="width:100%;">
+                    <thead>
+                        <tr style="color: var(--text-secondary); text-align: left; border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 0.75rem;">Ürün</th>
+                            <th style="padding: 0.75rem;">Müşteri</th>
+                            <th style="padding: 0.75rem;">Puan</th>
+                            <th style="padding: 0.75rem;">Yorum</th>
+                            <th style="padding: 0.75rem;">Tarih</th>
+                            <th style="padding: 0.75rem; text-align: right;">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in approved_reviews %}
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 0.75rem;"><strong>{{ review.product.title }}</strong></td>
+                                <td style="padding: 0.75rem;"><code>{{ review.user.username }}</code></td>
+                                <td style="padding: 0.75rem;">
+                                    <span style="color: #f59e0b;">
+                                        {% for i in '12345' %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fa-solid fa-star"></i>
+                                            {% else %}
+                                                <i class="fa-regular fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </td>
+                                <td style="padding: 0.75rem;">{{ review.comment|default:"*Yorumsuz puan verildi*" }}</td>
+                                <td style="padding: 0.75rem; font-size: 0.85rem;" class="text-muted">{{ review.created_at|date:"d/m/Y H:i" }}</td>
+                                <td style="padding: 0.75rem; text-align: right;">
+                                    <form action="{% url 'seller_handle_review' review.id %}" method="post" style="margin:0;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="REJECT">
+                                        <button type="submit" class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; background-color: var(--danger); border: none;">
+                                            <i class="fa-solid fa-trash-can"></i> Sil / Kaldır
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem 0;" class="text-muted">
+                <i class="fa-solid fa-circle-info" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                <p>Henüz onaylanmış bir yorum bulunmuyor.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let tab = urlParams.get('tab');
+        
+        if (window.location.hash === "#chat" || tab === "chat") {
+            switchDashboardTab("chat");
+        } else if (tab) {
+            switchDashboardTab(tab);
+        } else {
+            switchDashboardTab("orders");
+        }
+        
+        const sellerChat = document.getElementById('sellerChatBox');
+        if (sellerChat) {
+            sellerChat.scrollTop = sellerChat.scrollHeight;
+        }
+
+        // AJAX Chat gönderme ve Polling (sayfa yenilenmeden)
+        const chatSendForm = document.getElementById('chatSendForm');
+        const chatMessagesBox = document.getElementById('sellerChatBox');
+        const chatMessageInput = document.getElementById('chatMessageInput');
+        const recipientIdInput = document.getElementById('recipientIdInput');
+        const currentUserId = {{ request.user.id|default:0 }};
+
+        let lastMessageId = 0;
+        function updateLastMessageId() {
+            if (chatMessagesBox) {
+                const messageElements = chatMessagesBox.querySelectorAll('[data-message-id]');
+                if (messageElements.length > 0) {
+                    const lastEl = messageElements[messageElements.length - 1];
+                    lastMessageId = parseInt(lastEl.getAttribute('data-message-id'), 10) || 0;
+                }
+            }
+        }
+        updateLastMessageId();
+
+        if (chatSendForm) {
+            chatSendForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const text = chatMessageInput.value.trim();
+                if (!text) return;
+
+                const formData = new FormData(chatSendForm);
+                fetch(chatSendForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        chatMessageInput.value = "";
+                        appendMessageBubble(data.message);
+                    }
+                })
+                .catch(err => console.error("Mesaj gönderilirken hata:", err));
+            });
+        }
+
+        function appendMessageBubble(msg) {
+            if (!chatMessagesBox) return;
+            if (chatMessagesBox.querySelector(`[data-message-id="${msg.id}"]`)) return;
+
+            const bubble = document.createElement('div');
+            bubble.setAttribute('data-message-id', msg.id);
+            
+            bubble.className = 'chat-bubble';
+            if (parseInt(msg.sender_id) === currentUserId) {
+                bubble.classList.add('sent');
+            } else {
+                bubble.classList.add('received');
+            }
+            
+            // XSS koruması için escapeHTML
+            const escapedText = msg.text.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+
+            bubble.innerHTML = `
+                <div>${escapedText}</div>
+                <div class="chat-time">
+                    ${msg.created_at_time}
+                </div>
+            `;
+            
+            chatMessagesBox.appendChild(bubble);
+            chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+            lastMessageId = msg.id;
+        }
+
+        // Arka Plandan Yeni Mesajları Çek (Polling - 3 Saniye)
+        if (chatMessagesBox && recipientIdInput) {
+            const activeContactId = parseInt(recipientIdInput.value, 10);
+            if (activeContactId) {
+                setInterval(() => {
+                    fetch(`/messages/poll/${activeContactId}/?last_id=${lastMessageId}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && data.messages.length > 0) {
+                            data.messages.forEach(msg => appendMessageBubble(msg));
+                        }
+                    })
+                    .catch(err => console.error("Mesajlar çekilirken hata:", err));
+                }, 3000);
+            }
+        }
+
+        // ---------------------------------------------------------
+        // Chart.js Grafikleri Entegrasyonu
+        // ---------------------------------------------------------
+        const salesLabels = JSON.parse('{{ daily_sales_labels_json|escapejs }}');
+        const salesAmounts = JSON.parse('{{ daily_sales_amounts_json|escapejs }}');
+        const payoutAmounts = JSON.parse('{{ daily_payout_amounts_json|default:"[]"|escapejs }}');
+        const productLabels = JSON.parse('{{ top_product_labels_json|escapejs }}');
+        const productCounts = JSON.parse('{{ top_product_counts_json|escapejs }}');
+
+        // 1. Satış & Hak Ediş Çift Çizgi Grafiği (Dual Area Chart)
+        const salesCtx = document.getElementById('salesChart');
+        if (salesCtx) {
+            const ctx2d = salesCtx.getContext('2d');
+            
+            // Gradient fill 1: Indigo
+            const gradientSales = ctx2d.createLinearGradient(0, 0, 0, 250);
+            gradientSales.addColorStop(0, 'rgba(99, 102, 241, 0.35)');
+            gradientSales.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+            // Gradient fill 2: Sunset Orange
+            const gradientPayout = ctx2d.createLinearGradient(0, 0, 0, 250);
+            gradientPayout.addColorStop(0, 'rgba(249, 115, 22, 0.35)');
+            gradientPayout.addColorStop(1, 'rgba(249, 115, 22, 0.0)');
+
+            new Chart(ctx2d, {
+                type: 'line',
+                data: {
+                    labels: salesLabels,
+                    datasets: [
+                        {
+                            label: 'Brüt Ciro (TL)',
+                            data: salesAmounts,
+                            borderColor: '#6366f1',
+                            backgroundColor: gradientSales,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#6366f1'
+                        },
+                        {
+                            label: 'Net Hak Ediş (TL)',
+                            data: payoutAmounts,
+                            borderColor: '#f97316',
+                            backgroundColor: gradientPayout,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#f97316'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                font: { family: 'Plus Jakarta Sans', size: 12, weight: '600' }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' TL';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' TL';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. En Çok Satan Ürünler Daire Grafiği (Doughnut Chart)
+        const productsCtx = document.getElementById('productsChart');
+        if (productsCtx) {
+            if (productLabels.length > 0) {
+                new Chart(productsCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: productLabels,
+                        datasets: [{
+                            data: productCounts,
+                            backgroundColor: [
+                                '#6366f1',
+                                '#f97316',
+                                '#10b981',
+                                '#ec4899',
+                                '#06b6d4'
+                            ],
+                            borderWidth: 2,
+                            borderColor: 'var(--bg-card)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                productsCtx.parentElement.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#888;">
+                        <i class="fa-solid fa-chart-pie" style="font-size:3rem; margin-bottom:0.75rem; color:#ccc;"></i>
+                        <span style="font-size:0.85rem;">Henüz satış yapılmadı</span>
+                    </div>
+                `;
+            }
+        }
+    });
+
+    const dashLinks = document.querySelectorAll('#sellerDashboardTabs .filter-item');
+    dashLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const tabName = this.getAttribute('data-tab');
+            if (tabName !== 'chat' || window.location.search.includes('chat_with')) {
+                switchDashboardTab(tabName);
+            }
+        });
+    });
+
+    function switchDashboardTab(tabName) {
+        document.querySelectorAll('.seller-tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        
+        const activeContent = document.getElementById(`seller-${tabName}`);
+        if (activeContent) {
+            activeContent.style.display = 'block';
+        }
+        
+        dashLinks.forEach(link => {
+            if (link.getAttribute('data-tab') === tabName) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+    }
+</script>
+
+<!-- Toplu Ürün Yükleme (CSV/Excel) Modal -->
+<div class="modal fade" id="bulkImportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg p-3">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-gradient"><i class="fa-solid fa-file-import text-success me-2"></i> Toplu Ürün Yükleme (CSV)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'seller_bulk_import_products' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Tek seferde yüzlerce ürünü sisteme aktarmak için CSV dosyanızı yükleyin.</p>
+                    
+                    <div class="alert alert-info py-2 px-3 small rounded-3 mb-3 d-flex align-items-center justify-content-between">
+                        <span><i class="fa-solid fa-circle-info me-1"></i> Formatı bilmiyor musunuz?</span>
+                        <a href="{% url 'seller_download_import_template' %}" class="btn btn-sm btn-light fw-bold rounded-pill border">
+                            <i class="fa-solid fa-download me-1"></i> Şablonu İndir (.CSV)
+                        </a>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold small">CSV Dosyası Seçiniz</label>
+                        <input type="file" name="csv_file" class="form-control" accept=".csv" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold" style="background: var(--gradient-primary); border: none;">
+                        <i class="fa-solid fa-upload me-1"></i> Ürünleri İçe Aktar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

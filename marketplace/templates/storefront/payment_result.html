@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load marketplace_tags %}
+
+{% block title %}Sipariş Tamamlandı - PazarYeri{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    
+    <div class="success-icon">
+        <i class="fa-solid fa-circle-check"></i>
+    </div>
+    
+    <h1 class="text-gradient">Ödeme Tamamlandı!</h1>
+    <p class="text-muted" style="font-size: 1.1rem; margin-top: 0.5rem;">
+        Siparişiniz başarıyla alındı ve satıcılara göre bölünerek dükkan panellerine iletildi.
+    </p>
+
+    <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem 1.5rem; display: inline-block; margin-top: 1.5rem; font-family: monospace;">
+        <span class="text-muted">Ödeme ID:</span> <span style="color: var(--secondary); font-weight: bold;">{{ payment_data.payment_id }}</span>
+    </div>
+
+    <!-- Eğitici Görsel Para Dağılım Haritası -->
+    <div class="money-flow-chart">
+        <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-money-bill-transfer"></i> Pazar Yeri Akıllı Para Dağılım Grafiği (Simülasyon)</h3>
+        
+        <!-- Müşteri Ödemesi Düğümü -->
+        <div class="money-node money-node-primary">
+            <i class="fa-solid fa-user-tag" style="font-size: 1.5rem; color: var(--primary);"></i>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">Müşteri Ödemesi</div>
+            <div style="font-weight: 800; font-size: 1.25rem; margin-top: 0.25rem;">{{ payment_data.total_paid|convert_price:request }}</div>
+        </div>
+
+        <div class="money-arrow"></div>
+
+        <!-- Iyzico Dağıtım Motoru Düğümü -->
+        <div class="money-node" style="border-color: #f59e0b; background-color: rgba(245, 158, 11, 0.05); min-width: 220px;">
+            <i class="fa-solid fa-gears" style="font-size: 1.5rem; color: #f59e0b;"></i>
+            <div style="font-size: 0.85rem; font-weight: bold; margin-top: 0.25rem;">Pazaryeri Dağıtım Motoru</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Anlık Bölme & IBAN Transferi</div>
+        </div>
+
+        <div class="money-arrow" style="background: linear-gradient(to bottom, #f59e0b, var(--secondary));"></div>
+
+        <!-- Alıcı Düğümleri Konteynırı -->
+        <div class="split-container">
+            
+            <!-- Platform Komisyon Cüzdanı -->
+            <div class="money-node platform-node">
+                <i class="fa-solid fa-building-columns" style="font-size: 1.5rem; color: var(--accent);"></i>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">Platform Payı (Komisyon)</div>
+                <div style="font-weight: 800; font-size: 1.15rem; color: var(--accent); margin-top: 0.25rem;">{{ payment_data.platform_commission|convert_price:request }}</div>
+                <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.25rem;">Ana Platform Hesabı</div>
+            </div>
+
+            <!-- Satıcılar için Döngü -->
+            {% for seller_break in payment_data.breakdown %}
+                <div class="money-node split-node">
+                    <i class="fa-solid fa-store" style="font-size: 1.5rem; color: var(--secondary);"></i>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">{{ seller_break.store_name }}</div>
+                    <div style="font-weight: 800; font-size: 1.15rem; color: var(--secondary); margin-top: 0.25rem;">{{ seller_break.seller_payout|convert_price:request }}</div>
+                    <div style="font-size: 0.65rem; color: var(--text-secondary); word-break: break-all; margin-top: 0.5rem; font-family: monospace;">
+                        <i class="fa-solid fa-wallet"></i> {{ seller_break.iban }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Detaylı Döküm Tablosu -->
+    <div class="card" style="text-align: left; margin-bottom: 2rem;">
+        <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">Detaylı Dağılım Tablosu</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--border-color); text-align: left; color: var(--text-secondary);">
+                    <th style="padding: 0.5rem 0;">Alıcı / Ortak</th>
+                    <th style="padding: 0.5rem 0;">Brüt Satış</th>
+                    <th style="padding: 0.5rem 0;">Komisyon Oranı</th>
+                    <th style="padding: 0.5rem 0;">Komisyon Kesintisi</th>
+                    <th style="padding: 0.5rem 0; text-align: right;">Net Hak Ediş (Payout)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                    <td style="padding: 0.75rem 0; font-weight: 600;">Platform Sahibi (Komisyon Toplamı)</td>
+                    <td style="padding: 0.75rem 0;">-</td>
+                    <td style="padding: 0.75rem 0;">Değişken</td>
+                    <td style="padding: 0.75rem 0; color: var(--accent); font-weight: 600;">+{{ payment_data.platform_commission|convert_price:request }}</td>
+                    <td style="padding: 0.75rem 0; text-align: right; font-weight: 700; color: var(--accent);">{{ payment_data.platform_commission|convert_price:request }}</td>
+                </tr>
+                {% for seller_break in payment_data.breakdown %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                        <td style="padding: 0.75rem 0;">{{ seller_break.store_name }} ({{ seller_break.iban }})</td>
+                        <td style="padding: 0.75rem 0;">{{ seller_break.subtotal|convert_price:request }}</td>
+                        <td style="padding: 0.75rem 0;">Satıcı Bazlı</td>
+                        <td style="padding: 0.75rem 0; color: var(--danger);">-{{ seller_break.commission_fee|convert_price:request }}</td>
+                        <td style="padding: 0.75rem 0; text-align: right; font-weight: 700; color: var(--secondary);">{{ seller_break.seller_payout|convert_price:request }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <a href="{% url 'store_index' %}" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+            Alışverişe Devam Et <i class="fa-solid fa-arrow-right-long"></i>
+        </a>
+    </div>
+
+</div>
+{% endblock %}

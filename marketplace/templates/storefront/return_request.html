@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load marketplace_tags %}
+
+{% block title %}İade Talebi Oluştur - PazarYeri{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <a href="{% url 'account' %}" class="text-muted"><i class="fa-solid fa-arrow-left"></i> Hesabıma Geri Dön</a>
+</div>
+
+<div class="card" style="max-width: 600px; margin: 0 auto; padding: 2.5rem;">
+    <h2 class="text-gradient" style="margin-bottom: 1.5rem;"><i class="fa-solid fa-rotate-left"></i> Kolay İade Talebi Oluştur</h2>
+    
+    <div style="background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; margin-bottom: 2rem;">
+        <h4 style="color: var(--secondary); margin-bottom: 0.5rem;"><i class="fa-solid fa-box"></i> İade Edilecek Ürün</h4>
+        <div style="font-weight: bold; font-size: 1.1rem;">{{ item.product.title }}</div>
+        {% if item.variant %}
+            <div style="font-size: 0.85rem;" class="text-muted">Özellikler: {{ item.variant }}</div>
+        {% endif %}
+        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+            Satın Alınan Adet: <strong>{{ item.quantity }}</strong> | 
+            Satış Fiyatı: <strong>{{ item.price|convert_price:request }}</strong> | 
+            Mağaza: <strong>{{ item.sub_order.seller.store_name }}</strong>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="reason" class="form-label">İade Talebi Gerekçesi (Nedeni)</label>
+            <textarea id="reason" name="reason" class="form-control" rows="5" placeholder="Lütfen iade etme nedeninizi detaylıca açıklayınız (Örn: Bedeni uymadı, defolu ürün vb.)" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-danger" style="width: 100%; padding: 0.9rem; font-size: 1rem;">
+            <i class="fa-solid fa-paper-plane"></i> İade Talebini Gönder
+        </button>
+    </form>
+</div>
+{% endblock %}

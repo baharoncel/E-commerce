@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sipariş Onayı - Marketplace</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        .content {
+            padding: 30px 25px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+        .order-badge {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+        .order-table th {
+            background-color: #f8fafc;
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .order-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .total-row td {
+            font-weight: 700;
+            font-size: 16px;
+            color: #0f172a;
+            border-bottom: none;
+            padding-top: 15px;
+        }
+        .footer {
+            background-color: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>🛍️ Siparişiniz Alındı!</h1>
+            <p>PazarYeri üzerinden alışveriş yaptığınız için teşekkür ederiz.</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">Sayın {{ order.customer.get_full_name|default:order.customer.username }},</div>
+            <p style="color: #475569; line-height: 1.6;">
+                Siparişiniz başarıyla sisteme ulaşmıştır. Satıcılarımız ürünlerinizi hazırlamak üzere bilgilendirilmiştir.
+            </p>
+
+            <div class="order-badge">
+                Sipariş No: #{{ order.id }} &bull; {{ order.created_at|date:"d M Y, H:i" }}
+            </div>
+
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Ürün</th>
+                        <th>Adet</th>
+                        <th style="text-align: right;">Tutar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in order.sub_orders.all %}
+                        {% for item in sub.items.all %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.product.title }}</strong><br>
+                                <span style="font-size: 12px; color: #64748b;">
+                                    Satıcı: {{ sub.seller.store_name }}
+                                    {% if item.variant %} ({{ item.variant }}){% endif %}
+                                </span>
+                            </td>
+                            <td>{{ item.quantity }}</td>
+                            <td style="text-align: right;">{{ item.get_total_item_price }} TL</td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align: right;">Toplam Tutar:</td>
+                        <td style="text-align: right; color: #16a34a;">{{ order.total_amount }} TL</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="font-size: 13px; color: #64748b; margin-top: 20px;">
+                Siparişinizin durumunu dilediğiniz zaman hesabınızdaki <strong>Siparişlerim</strong> sayfasından takip edebilirsiniz.
+            </p>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 PazarYeri Çoklu Satıcılı E-Ticaret Platformu. Tüm hakları saklıdır.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1006 @@
+[2026-08-01 21:33:58] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-01 21:34:42] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-01 21:35:16] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-01 21:35:40] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-01 21:36:03] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-01 21:36:58] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-02 10:48:02] [WARNING] [django.request:249] Not Found: /favicon.ico
+[2026-08-02 10:48:02] [WARNING] [django.server:249] "GET /favicon.ico HTTP/1.1" 404 26488
+[2026-08-03 12:54:15] [WARNING] [django.request:249] Not Found: /favicon.ico
+[2026-08-03 12:54:15] [WARNING] [django.server:249] "GET /favicon.ico HTTP/1.1" 404 26488
+[2026-08-03 18:34:44] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6721/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:34:44] [ERROR] [django.request:249] Internal Server Error: /product/6721/
+[2026-08-03 18:34:44] [ERROR] [django.server:249] "GET /product/6721/ HTTP/1.1" 500 443
+[2026-08-03 18:34:53] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6720/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:34:53] [ERROR] [django.request:249] Internal Server Error: /product/6720/
+[2026-08-03 18:34:53] [ERROR] [django.server:249] "GET /product/6720/ HTTP/1.1" 500 443
+[2026-08-03 18:40:16] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6726/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:40:16] [ERROR] [django.request:249] Internal Server Error: /product/6726/
+[2026-08-03 18:40:16] [ERROR] [django.server:249] "GET /product/6726/ HTTP/1.1" 500 443
+[2026-08-03 18:40:22] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6725/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:40:22] [ERROR] [django.request:249] Internal Server Error: /product/6725/
+[2026-08-03 18:40:22] [ERROR] [django.server:249] "GET /product/6725/ HTTP/1.1" 500 443
+[2026-08-03 18:40:25] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6724/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:40:25] [ERROR] [django.request:249] Internal Server Error: /product/6724/
+[2026-08-03 18:40:25] [ERROR] [django.server:249] "GET /product/6724/ HTTP/1.1" 500 443
+[2026-08-03 18:40:28] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6723/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:40:28] [ERROR] [django.request:249] Internal Server Error: /product/6723/
+[2026-08-03 18:40:28] [ERROR] [django.server:249] "GET /product/6723/ HTTP/1.1" 500 443
+[2026-08-03 18:40:31] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /product/6722/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: Http404: No Product matches the given query.
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\db\models\query.py", line 639, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+marketplace.models.Product.DoesNotExist: Product matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Bahar\Desktop\E-commerce\marketplace\views.py", line 261, in product_detail
+    product = get_object_or_404(Product.objects.select_related('seller', 'category'), id=product_id)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\shortcuts.py", line 92, in get_object_or_404
+    raise Http404(
+        "No %s matches the given query." % queryset.model._meta.object_name
+    )
+django.http.response.Http404: No Product matches the given query.
+
+[2026-08-03 18:40:31] [ERROR] [django.request:249] Internal Server Error: /product/6722/
+[2026-08-03 18:40:31] [ERROR] [django.server:249] "GET /product/6722/ HTTP/1.1" 500 443
+[2026-08-04 10:41:50] [WARNING] [django.request:249] Not Found: /favicon.ico
+[2026-08-04 10:41:50] [WARNING] [django.server:249] "GET /favicon.ico HTTP/1.1" 404 26488
+[2026-08-05 17:25:37] [WARNING] [django.request:249] Not Found: /favicon.ico
+[2026-08-05 17:25:37] [WARNING] [django.server:249] "GET /favicon.ico HTTP/1.1" 404 26488
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-05 20:33:42] [ERROR] [django.security.DisallowedHost:249] Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\Bahar\Desktop\E-commerce\.venv\Lib\site-packages\django\http\request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+[2026-08-06 14:51:24] [WARNING] [django.request:249] Not Found: /favicon.ico
+[2026-08-06 14:51:24] [WARNING] [django.server:249] "GET /favicon.ico HTTP/1.1" 404 26488
+[2026-08-06 14:53:52] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:53:52] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:02] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:02] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:54:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:54:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:55:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:55:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:55:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:55:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:55:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:55:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:55:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:55:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:55:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:55:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:55:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:55:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:56:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:56:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:56:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:56:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:56:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:56:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:56:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:56:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:56:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:56:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:56:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:56:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:57:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:57:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:57:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:57:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:57:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:57:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:57:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:57:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:57:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:57:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:57:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:57:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:58:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:58:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:58:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:58:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:58:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:58:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:58:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:58:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:58:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:58:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:58:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:58:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:59:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:59:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:59:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:59:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:59:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:59:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:59:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:59:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:59:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:59:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 14:59:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 14:59:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:00:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:00:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:00:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:00:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:00:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:00:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:00:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:00:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:00:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:00:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:00:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:00:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:01:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:01:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:01:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:01:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:01:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:01:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:01:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:01:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:01:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:01:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:01:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:01:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:03] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:03] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:13] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:13] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:23] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:23] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:43] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:43] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:02:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:02:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:03:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:03:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:03:08] [ERROR] [pazaryeri:43] [CENTRALIZED EXCEPTION HANDLER]
+Path: GET /api/test-error/
+Client IP: 127.0.0.1
+User: AnonymousUser
+Masked Parameters: {}
+Exception Type: ValueError: Test Hatasi
+Traceback:
+NoneType: None
+
+[2026-08-06 15:03:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:03:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:03:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:03:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:03:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:03:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:03:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:03:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:06:12] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:06:12] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:06:18] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:06:18] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:06:28] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:06:28] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:06:38] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:06:38] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:06:48] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:06:48] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:06:58] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:06:58] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:07:08] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:07:08] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:07:18] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:07:18] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:07:28] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:07:28] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:07:38] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:07:38] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:07:48] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:07:48] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:07:58] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:07:58] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:08:08] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:08:08] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:10:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:10:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:10:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:10:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:10:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:10:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:11:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:11:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:11:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:11:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:11:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:11:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:11:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:11:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:11:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:11:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:11:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:11:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:12:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:12:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:13:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:13:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:13:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:13:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:13:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:13:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:13:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:13:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:13:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:13:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:13:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:13:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:33] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:33] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:38] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:38] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:44] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:44] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:14:57] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:14:57] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:07] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:07] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:07] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:07] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:15:59] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:15:59] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:16:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:16:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:16:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:16:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:16:29] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:16:29] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:16:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:16:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:16:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:16:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:16:59] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:16:59] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:17:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:17:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:17:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:17:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:17:29] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:17:29] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:17:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:17:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:17:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:17:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:17:50] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:17:50] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:10] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:10] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:46] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:46] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:18:57] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:18:57] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:07] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:07] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:17] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:17] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:26] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:26] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:36] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:36] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:46] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:46] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:19:56] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:19:56] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:20:06] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:20:06] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:20:16] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:20:16] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:20:26] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:20:26] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:20:36] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:20:36] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:20:46] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:20:46] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:20:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:20:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:44] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:44] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:53] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:53] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:21:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:21:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:22:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:22:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:22:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:22:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:22:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:22:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:22:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:22:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:22:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:22:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:22:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:22:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:23:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:23:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:23:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:23:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:23:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:23:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:23:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:23:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:23:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:23:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:23:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:23:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:24:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:24:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:24:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:24:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:24:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:24:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:24:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:24:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:24:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:24:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:24:55] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:24:55] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:25:05] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:25:05] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:25:15] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:25:15] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:25:25] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:25:25] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:25:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:25:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:25:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:25:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:25:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:25:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:26:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:26:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:26:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:26:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:26:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:26:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:26:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:26:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:26:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:26:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:26:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:26:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:27:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:27:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:27:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:27:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:27:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:27:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:27:32] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:27:32] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:27:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:27:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:27:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:27:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:28:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:28:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:28:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:28:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:28:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:28:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:28:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:28:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:28:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:28:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:28:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:28:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:29:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:29:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:29:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:29:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:29:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:29:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:29:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:29:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:29:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:29:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:29:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:29:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:30:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:30:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:30:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:30:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:30:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:30:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:30:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:30:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:30:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:30:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:30:51] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:30:51] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:01] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:01] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:11] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:11] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:21] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:21] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:31] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:31] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:41] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:41] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:48] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:48] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:31:58] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:31:58] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:32:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:32:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:32:18] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:32:18] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:32:28] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:32:28] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:32:38] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:32:38] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:32:48] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:32:48] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:32:58] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:32:58] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:08] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:08] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:29] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:29] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:33:59] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:33:59] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:34:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:34:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:34:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:34:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:34:29] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:34:29] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:34:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:34:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:34:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:34:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:34:59] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:34:59] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:35:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:35:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:35:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:35:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:35:29] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:35:29] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:35:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:35:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:35:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:35:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:35:59] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:35:59] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:36:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:36:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:36:49] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:36:49] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:36:59] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:36:59] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:37:09] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:37:09] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:37:19] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:37:19] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:37:29] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:37:29] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:37:39] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:37:39] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:37:42] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:37:42] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:37:52] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:37:52] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:02] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:02] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:12] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:12] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:22] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:22] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:32] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:32] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:35] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:35] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:45] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:45] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:48] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:48] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:38:58] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:38:58] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:39:07] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:39:07] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:39:17] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:39:17] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:39:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:39:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:39:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:39:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:39:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:39:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:39:50] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:39:50] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:40:00] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:40:00] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:40:10] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:40:10] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:40:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:40:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:40:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:40:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:40:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:40:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:40:50] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:40:50] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:41:00] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:41:00] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:41:10] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:41:10] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:41:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:41:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:41:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:41:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:41:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:41:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:41:50] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:41:50] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:42:00] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:42:00] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:42:10] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:42:10] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:42:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:42:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:42:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:42:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:42:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:42:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:42:50] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:42:50] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:43:00] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:43:00] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:43:10] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:43:10] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:43:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:43:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:43:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:43:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:43:40] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:43:40] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:43:50] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:43:50] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:44:00] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:44:00] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:44:10] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:44:10] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:44:20] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:44:20] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52
+[2026-08-06 15:44:30] [WARNING] [django.request:249] Bad Request: /api/chat/poll/
+[2026-08-06 15:44:30] [WARNING] [django.server:249] "GET /api/chat/poll/?recipient_id=1 HTTP/1.1" 400 52

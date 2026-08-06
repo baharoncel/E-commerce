@@ -1,0 +1,1052 @@
+{% extends 'base.html' %}
+{% load marketplace_tags %}
+
+{% block title %}İncele - {{ product.title }} - PazarYeri{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Custom button styles */
+    .variant-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .variant-btn.disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        background-color: #f3f4f6;
+        border-color: #e5e7eb;
+        color: #9ca3af;
+        pointer-events: none;
+    }
+    
+    .variant-btn.disabled::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: #9ca3af;
+        transform: rotate(-15deg);
+    }
+    
+    .color-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        flex-shrink: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <a href="{% url 'store_index' %}" class="text-muted"><i class="fa-solid fa-arrow-left"></i> Vitrine Geri Dön</a>
+    
+    <!-- Favori Butonu -->
+    {% if user.is_authenticated %}
+        <form action="{% url 'toggle_favorite' product.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline" style="border-radius: 20px; padding: 0.5rem 1rem; color: var(--danger); border-color: rgba(244, 63, 94, 0.4);">
+                {% if is_favorited %}
+                    <i class="fa-solid fa-heart"></i> Favorilerimde
+                {% else %}
+                    <i class="fa-regular fa-heart"></i> Favorilerime Ekle
+                {% endif %}
+            </button>
+        </form>
+    {% endif %}
+</div>
+
+<div class="card" style="padding: 2rem; margin-bottom: 3rem; background-color: #ffffff; border: 1px solid #e6e6e6;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+        
+        <!-- Sol Sütun: Gelişmiş Ürün Görseli, Büyüteç (Magnifier) ve 360° Galeri -->
+        <div>
+            <!-- Baskın Renk ve Görsel Etiketi -->
+            {% if product.dominant_color %}
+                <div class="mb-2 d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill border shadow-sm px-3 py-2 d-inline-flex align-items-center gap-2" style="background-color: {{ product.dominant_color }}; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+                        <i class="fa-solid fa-palette"></i> Baskın Renk: {{ product.dominant_color }}
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="toggle360View()">
+                        <i class="fa-solid fa-rotate"></i> 360° Görünüm
+                    </button>
+                </div>
+            {% endif %}
+
+            <!-- Magnifier Container -->
+            <div id="img-magnifier-container" style="width: 100%; height: 380px; background: url('{% lqip_placeholder product %}') center/cover no-repeat; border: 2px solid {% if product.dominant_color %}{{ product.dominant_color }}{% else %}var(--border-color){% endif %}; border-radius: 12px; position: relative; overflow: hidden; cursor: crosshair;">
+                {% if product.image %}
+                    <img id="main-product-img" 
+                         src="{% cdn_url product.image_url %}" 
+                         srcset="{% responsive_srcset product %}" 
+                         sizes="(max-width: 600px) 300px, (max-width: 1200px) 600px, 1200px" 
+                         alt="{{ product.title }}" 
+                         loading="lazy"
+                         style="width: 100%; height: 100%; object-fit: cover; transition: filter 0.5s ease; filter: blur(0px);"
+                         onload="this.style.filter='blur(0px)'">
+                    <!-- Magnifier Glass -->
+                    <div id="magnifier-glass" style="position: absolute; width: 140px; height: 140px; border: 3px solid #ffffff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: none; pointer-events: none; background-repeat: no-repeat; background-size: 250% 250%;"></div>
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center h-100 font-size-4">
+                        {% if product.category.parent.name == "Giyim & Moda" or product.category.name == "Giyim & Moda" %}
+                            <i class="fa-solid fa-shirt" style="color: #ccc; font-size: 4rem;"></i>
+                        {% elif product.category.parent.name == "Kozmetik & Makyaj" or product.category.name == "Kozmetik & Makyaj" %}
+                            <i class="fa-solid fa-sparkles" style="color: #ccc; font-size: 4rem;"></i>
+                        {% elif product.category.parent.name == "Takılar" or product.category.name == "Takılar" %}
+                            <i class="fa-solid fa-gem" style="color: #ccc; font-size: 4rem;"></i>
+                        {% elif product.category.parent.name == "Ayakkabı" or product.category.name == "Ayakkabı" %}
+                            <i class="fa-solid fa-shoe-prints" style="color: #ccc; font-size: 4rem;"></i>
+                        {% else %}
+                            <i class="fa-solid fa-bag-shopping" style="color: #ccc; font-size: 4rem;"></i>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <script>
+                // Gelişmiş Büyüteç (Magnifier Zoom) Script'i
+                document.addEventListener("DOMContentLoaded", function() {
+                    const container = document.getElementById("img-magnifier-container");
+                    const img = document.getElementById("main-product-img");
+                    const glass = document.getElementById("magnifier-glass");
+
+                    if (container && img && glass) {
+                        glass.style.backgroundImage = "url('" + img.src + "')";
+
+                        container.addEventListener("mousemove", function(e) {
+                            const rect = container.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+
+                            if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+                                glass.style.display = "none";
+                                return;
+                            }
+
+                            glass.style.display = "block";
+                            glass.style.left = (x - 70) + "px";
+                            glass.style.top = (y - 70) + "px";
+
+                            const px = (x / rect.width) * 100;
+                            const py = (y / rect.height) * 100;
+                            glass.style.backgroundPosition = px + "% " + py + "%";
+                        });
+
+                        container.addEventListener("mouseleave", function() {
+                            glass.style.display = "none";
+                        });
+                    }
+                });
+
+                // 360 Derece Görünüm Simülasyonu
+                let is360Mode = false;
+                function toggle360View() {
+                    is360Mode = !is360Mode;
+                    const img = document.getElementById("main-product-img");
+                    if (img) {
+                        if (is360Mode) {
+                            img.style.transform = "rotateY(180deg)";
+                            img.style.transition = "transform 0.8s ease";
+                        } else {
+                            img.style.transform = "rotateY(0deg)";
+                        }
+                    }
+                }
+            </script>
+            
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                <!-- Trendyol Style Seller Scorecard -->
+                <div class="seller-scorecard-box flex-fill text-center">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                        <span class="fw-bold text-dark fs-6"><i class="fa-solid fa-store text-primary me-1"></i> {{ product.seller.store_name }}</span>
+                        <span class="badge bg-success-subtle text-success border border-success fw-bold" style="font-size: 0.75rem;">9.8 / 10</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center gap-1 my-1 flex-wrap" style="font-size: 0.7rem;">
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning"><i class="fa-solid fa-medal me-1"></i> Süper Satıcı</span>
+                        <span class="badge bg-primary-subtle text-primary border border-primary"><i class="fa-solid fa-bolt me-1"></i> Hızlı Gönderi</span>
+                    </div>
+                    <div class="text-muted small mb-2" style="font-size: 0.72rem;">Komisyon: %{{ product.seller.commission_rate }}</div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'account' %}?tab=chat&chat_with={{ product.seller.user.id }}#chat" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-bold w-100" style="font-size: 0.75rem;">
+                            <i class="fa-solid fa-comments me-1"></i> Satıcıya Soru Sor
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="seller-scorecard-box flex-fill text-center">
+                    <div class="text-muted small mb-1"><i class="fa-solid fa-tags text-primary me-1"></i> Kategori</div>
+                    <div class="fw-bold text-dark fs-6">{{ product.category }}</div>
+                    <div class="mt-2 text-success small fw-bold"><i class="fa-solid fa-shield-halved me-1"></i> Orijinallik Garantili</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Sağ Sütun: Ürün Detayları ve Varyasyon Seçimi -->
+        <div style="display: flex; flex-direction: column;">
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800;">{{ product.title }}</h1>
+            
+            <div id="dynamicPrice" style="font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 1.5rem;">
+                {{ product.base_price|convert_price:request }}
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--text-secondary);">Ürün Açıklaması</h4>
+                <p class="text-muted">{{ product.description|default:"Bu ürün için henüz açıklama girilmemiş." }}</p>
+            </div>
+
+            <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: 10px; background: #fafafa;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                    <div>
+                        <div class="text-muted" style="font-size:0.85rem;">Puanlama</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">{{ product.average_rating|floatformat:2 }} / 5</div>
+                        <div class="text-muted" style="font-size: 0.85rem;">{{ product.review_count }} onaylı yorum</div>
+                    </div>
+                    <div style="color: #f59e0b; font-size: 1rem;">
+                        {% for i in '12345' %}
+                            {% if forloop.counter <= product.average_rating|floatformat:0 %}
+                                <i class="fa-solid fa-star"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Varyasyon Seçim Formu -->
+            <form action="{% url 'add_to_cart' %}" method="post" id="addToCartForm">
+                {% csrf_token %}
+                <input type="hidden" name="variant_id" id="selectedVariantId" value="">
+                
+                <!-- Renk Seçimi -->
+                {% if colors %}
+                    <div class="form-group">
+                        <label class="form-label">Renk Seçiniz</label>
+                        <div class="variant-btn-group" id="colorPicker">
+                            {% for color in colors %}
+                                <button type="button" class="variant-btn" data-type="color" data-value="{{ color }}">{{ color }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Beden Seçimi -->
+                {% if sizes %}
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between align-items: center; margin-bottom: 0.35rem;">
+                            <label class="form-label mb-0">Beden Seçiniz</label>
+                            <button type="button" class="btn btn-link text-primary p-0 border-0 ms-2 small font-weight-bold" data-bs-toggle="modal" data-bs-target="#sizeGuideModal" style="font-size: 0.82rem; text-decoration: none;">
+                                <i class="fa-solid fa-ruler-combined"></i> Bedenini Bul / Ölçü Rehberi
+                            </button>
+                        </div>
+                        <div class="variant-btn-group" id="sizePicker">
+                            {% for size in sizes %}
+                                <button type="button" class="variant-btn" data-type="size" data-value="{{ size }}">{{ size }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <!-- Numara Seçimi -->
+                {% if size_numbers %}
+                    <div class="form-group">
+                        <label class="form-label">Numara Seçiniz</label>
+                        <div class="variant-btn-group" id="sizeNumberPicker">
+                            {% for num in size_numbers %}
+                                <button type="button" class="variant-btn" data-type="size_number" data-value="{{ num }}">{{ num }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- B2B Toptan Kademeli İndirim Tablosu -->
+                <div class="p-3 mb-3 rounded-3 border bg-light small">
+                    <div class="fw-bold text-primary mb-1"><i class="fa-solid fa-boxes-stacked me-1"></i> B2B Toptan Fiyat Kademeleri</div>
+                    <div class="d-flex justify-content-between text-muted" style="font-size:0.78rem;">
+                        <span>1 - 9 Adet: <strong>%0 İndirim</strong></span>
+                        <span>10 - 49 Adet: <strong class="text-success">%15 İndirim</strong></span>
+                        <span>50+ Adet: <strong class="text-danger fw-extrabold">%30 İndirim</strong></span>
+                    </div>
+                </div>
+
+                <!-- Dinamik Stok Bilgisi -->
+                <div id="stockStatus" style="margin-bottom: 1.5rem; font-weight: 600;">
+                    <span class="text-muted">Lütfen yukarıdaki özelliklerden varyasyon seçiniz.</span>
+                </div>
+
+                <!-- Adet ve Sepete Ekle -->
+                <div style="display: flex; gap: 1rem; align-items: flex-end; margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <div class="form-group" style="margin-bottom: 0; width: 100px;">
+                        <label for="quantity" class="form-label">Adet</label>
+                        <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" required>
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                        <button type="submit" class="btn btn-primary" id="addToCartBtn" style="flex-grow: 1;" disabled>
+                            <i class="fa-solid fa-cart-plus"></i> Sepete Ekle
+                        </button>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary" style="flex-grow: 1; text-align: center;">
+                            Giriş Yaparak Satın Al <i class="fa-solid fa-right-to-bracket"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<div style="margin-bottom: 2rem; padding: 1.5rem; background: #fff; border: 1px solid var(--border-color); border-radius: 12px;">
+    <h2 style="font-size: 1.2rem; margin-bottom: 1rem; font-weight: 800;">Müşteri Yorumları</h2>
+
+    {% if user.is_authenticated and can_review %}
+        <form method="post" enctype="multipart/form-data" style="margin-bottom: 1.25rem;">
+            {% csrf_token %}
+            <input type="hidden" name="review_submit" value="1">
+            <div class="form-group">
+                <label class="form-label">Puanınız</label>
+                <select name="rating" class="form-control" required>
+                    <option value="5">5 - Harika</option>
+                    <option value="4">4 - İyi</option>
+                    <option value="3">3 - Orta</option>
+                    <option value="2">2 - Zayıf</option>
+                    <option value="1">1 - Kötü</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Yorumunuz</label>
+                <textarea name="comment" class="form-control" rows="3" placeholder="Ürünü değerlendirin..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ürün Görseli (İsteğe Bağlı)</label>
+                <input type="file" name="review_image" class="form-control" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary">Yorumu Gönder</button>
+        </form>
+    {% elif user.is_authenticated %}
+        <div class="alert alert-info" style="margin-bottom: 1rem;">Bu ürüne daha önce teslim edilmiş bir siparişiniz varsa yorum bırakabilirsiniz.</div>
+    {% else %}
+        <div class="alert alert-info" style="margin-bottom: 1rem;">Yorum bırakmak için giriş yapın.</div>
+    {% endif %}
+
+    {% if reviews %}
+        <div class="d-flex gap-2 mb-3 flex-wrap align-items-center" id="reviewFilterGroup">
+            <button type="button" class="btn btn-sm btn-primary rounded-pill review-filter-btn active" data-filter="all">Tüm Yorumlar ({{ reviews.count }})</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill review-filter-btn" data-filter="photo">📷 Fotoğraflı Yorumlar</button>
+            <button type="button" class="btn btn-sm btn-outline-warning rounded-pill review-filter-btn" data-filter="five">⭐ 5 Yıldızlı Yorumlar</button>
+        </div>
+
+        {% for review in reviews %}
+            <div class="review-card-item" data-has-photo="{% if review.image %}true{% else %}false{% endif %}" data-rating="{{ review.rating }}" style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <strong>{{ review.user.username }}</strong>
+                        {% if review.is_verified_buyer %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: 0.7rem; font-weight: 600;">
+                                <i class="fa-solid fa-circle-check"></i> Onaylı Alıcı
+                            </span>
+                        {% endif %}
+                    </div>
+                    <span style="color: #f59e0b;">
+                        {% for i in '12345' %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fa-solid fa-star"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="text-muted" style="font-size: 0.8rem; margin-top: 0.25rem;">{{ review.created_at|date:"d M Y H:i" }}</div>
+                {% if review.comment %}
+                    <p style="margin-top: 0.75rem; margin-bottom: 0.5rem;">{{ review.comment }}</p>
+                {% endif %}
+                {% if review.image %}
+                    <div style="margin-top: 0.75rem; margin-bottom: 0.5rem;">
+                        <div class="review-image-wrapper" style="display: inline-block; position: relative; cursor: pointer;" onclick="openImageModal('{{ review.image.url }}')">
+                            <img src="{{ review.image.url }}" alt="Yorum Görseli" style="width: 100px; height: 100px; border-radius: 10px; border: 1px solid var(--border-color); object-fit: cover; transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                            <span style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 4px; padding: 2px 5px; font-size: 0.65rem;">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top" style="border-top: 1px solid rgba(0,0,0,0.05) !important;">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 helpful-btn" data-review-id="{{ review.id }}" style="font-size: 0.75rem;">
+                        <i class="fa-regular fa-thumbs-up me-1"></i> Faydalı Buldum (<span class="helpful-count-val">{{ review.helpful_count }}</span>)
+                    </button>
+                    {% if review.is_verified_buyer %}
+                    <span class="badge bg-success text-white rounded-pill" style="font-size: 0.68rem; padding: 4px 8px;">
+                        <i class="fa-solid fa-circle-check"></i> Doğrulanmış Alıcı
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Henüz onaylı yorum yok.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.helpful-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const reviewId = this.getAttribute('data-review-id');
+                const countSpan = this.querySelector('.helpful-count-val');
+                const self = this;
+
+                fetch(`/api/reviews/${reviewId}/helpful/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': (document.querySelector('[name=csrfmiddlewaretoken]') || {}).value || '',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.helpful_count !== undefined) {
+                        countSpan.textContent = data.helpful_count;
+                    }
+                    if (data.status === 'success') {
+                        self.classList.remove('btn-outline-secondary');
+                        self.classList.add('btn-success', 'text-white');
+                    }
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: data.status === 'success' ? 'success' : 'info',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<!-- AKILLI ÜRÜN ÖNERİ MOTORU BÖLÜMÜ -->
+<div style="margin-bottom: 2rem;">
+    <h2 style="border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: #333; font-weight: 800; display: flex; align-items: center; gap: 0.6rem;">
+        <i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Bu Ürünü Alanlar Bunları da Aldı
+    </h2>
+
+    {% if recommended_products %}
+        <div class="grid-3" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.25rem;">
+            {% for rec_prod in recommended_products %}
+                <div class="card product-card" style="background-color: #ffffff; border: 1px solid #e6e6e6; border-radius: 8px; overflow: hidden; padding: 0.75rem;">
+                    <div class="product-image-placeholder" style="height: 160px; margin-bottom: 0.5rem; font-size: 2.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f6f6f6; border-radius: 6px;">
+                        {% if rec_prod.image %}
+                            <img src="{{ rec_prod.image_url }}" alt="{{ rec_prod.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <i class="fa-solid fa-shirt" style="color: #ccc; font-size: 2.5rem;"></i>
+                        {% endif %}
+                    </div>
+                    <div class="product-seller-info" style="font-size: 0.75rem; margin-bottom: 0.25rem; font-weight: 700; color: #666;">
+                        <i class="fa-solid fa-store"></i> {{ rec_prod.seller.store_name }}
+                    </div>
+                    <h4 style="font-size: 0.88rem; margin-bottom: 0.25rem; font-weight: 600; color: #333;">{{ rec_prod.title }}</h4>
+                    <p class="text-muted" style="font-size: 0.78rem; flex-grow: 1; margin-bottom: 0.5rem;">{{ rec_prod.description|truncatewords:10 }}</p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.5rem;">
+                        <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">{{ rec_prod.base_price|convert_price:request }}</span>
+                        <a href="{% url 'product_detail' rec_prod.id %}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 4px;">İncele</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">Benzer kategoride başka ürün bulunamadı.</p>
+    {% endif %}
+</div>
+
+<!-- BU KOMBİNİ TAMAMLA (LOOKBOOK & STYLE BOX) BÖLÜMÜ -->
+<div class="lookbook-section my-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 20px; padding: 1.75rem; color: #fff; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25); position: relative;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <span class="badge" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; font-weight: 800; padding: 0.35rem 0.85rem; border-radius: 20px; text-transform: uppercase; font-size: 0.72rem; display: inline-block; margin-bottom: 0.4rem;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Stilist Kombin Önerisi
+            </span>
+            <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0; color: #fff;">Bu Kombini Tamamla (Interactive Lookbook)</h3>
+            <p style="font-size: 0.82rem; color: #94a3b8; margin: 0.2rem 0 0 0;">Parçalara (Elbise, Çanta, Parfüm) tıklayarak detay baloncuğunu açın veya tüm kombini indirimiyle sepetinize ekleyin.</p>
+        </div>
+        <button type="button" class="btn" onclick="addAllOutfitToCart()" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: #fff; font-weight: 700; border: none; border-radius: 12px; padding: 0.6rem 1.2rem; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(236,72,153,0.3); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fa-solid fa-bag-shopping me-1"></i> Tüm Kombini Sepete Ekle (%10 İndirimli)
+        </button>
+    </div>
+
+    <!-- Interactive Hotspot Lookbook Container -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: center;">
+        
+        <!-- Interactive Visual Hotspot Card -->
+        <div style="position: relative; background: #000; border-radius: 16px; overflow: hidden; min-height: 280px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
+            <img src="{{ product.image_url }}" alt="{{ product.title }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;">
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 30%, rgba(15,23,42,0.85) 100%);"></div>
+            
+            <!-- Hotspot Pin 1: Elbise / Ana Ürün (Göğüs/Üst Hiza) -->
+            <button type="button" class="outfit-hotspot-pin" onclick="openOutfitBubble('elbise', '👗 Elbise & Üst Giyim', '{{ product.title|escapejs }}', '{{ product.base_price|convert_price:request }}', '{{ product.image_url }}', '{{ product.id }}')" style="position: absolute; top: 25%; left: 48%; background: #ec4899; color: #fff; border: 3px solid #fff; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; box-shadow: 0 0 15px #ec4899; z-index: 10; animation: pulse 2s infinite;" title="Elbise Detayı">
+                <i class="fa-solid fa-shirt"></i>
+            </button>
+
+            <!-- Hotspot Pin 2: Çanta (Yan Aksesuar Hiza) -->
+            <button type="button" class="outfit-hotspot-pin" onclick="openOutfitBubble('canta', '👜 Aksesuar & Deri Çanta', '{% if outfit_products.0 %}{{ outfit_products.0.title|escapejs }}{% else %}Şık Hakiki Deri Omuz Çantası{% endif %}', '{% if outfit_products.0 %}{{ outfit_products.0.base_price|convert_price:request }}{% else %}₺450.00{% endif %}', '{% if outfit_products.0 %}{{ outfit_products.0.image_url }}{% else %}/static/images/placeholder.png{% endif %}', '{% if outfit_products.0 %}{{ outfit_products.0.id }}{% else %}0{% endif %}')" style="position: absolute; top: 52%; left: 78%; background: #3b82f6; color: #fff; border: 3px solid #fff; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; box-shadow: 0 0 15px #3b82f6; z-index: 10; animation: pulse 2s infinite 0.5s;" title="Çanta Detayı">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </button>
+
+            <!-- Hotspot Pin 3: Parfüm / Kozmetik (Sol Üst Aksesuar Köşesi - Etek Kumaşından Tamamen Uzaklaştırıldı) -->
+            <button type="button" class="outfit-hotspot-pin" onclick="openOutfitBubble('parfum', '✨ Lüks Oryantal Parfüm', '{% if outfit_products.1 %}{{ outfit_products.1.title|escapejs }}{% else %}Lüks Oryantal Gece Parfümü{% endif %}', '{% if outfit_products.1 %}{{ outfit_products.1.base_price|convert_price:request }}{% else %}₺380.00{% endif %}', '{% if outfit_products.1 %}{{ outfit_products.1.image_url }}{% else %}/static/images/placeholder.png{% endif %}', '{% if outfit_products.1 %}{{ outfit_products.1.id }}{% else %}0{% endif %}')" style="position: absolute; top: 12%; left: 12%; background: #10b981; color: #fff; border: 3px solid #fff; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; box-shadow: 0 0 15px #10b981; z-index: 10; animation: pulse 2s infinite 1s;" title="Parfüm Detayı">
+                <i class="fa-solid fa-spray-can"></i>
+            </button>
+
+            <!-- Active Speech Bubble (Baloncuk Popover Container) -->
+            <div id="outfitBubbleContainer" style="display: none; position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); width: 92%; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(16px); border: 2px solid rgba(251, 191, 36, 0.4); border-radius: 16px; padding: 1.1rem; box-shadow: 0 12px 35px rgba(0,0,0,0.7); z-index: 9999; animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                    <span id="bubbleCategoryTag" style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #fbbf24; background: rgba(251, 191, 36, 0.2); padding: 0.25rem 0.6rem; border-radius: 8px;">👗 Elbise</span>
+                    <button type="button" onclick="closeOutfitBubble()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer;">&times;</button>
+                </div>
+                <div style="display: flex; gap: 0.85rem; align-items: center;">
+                    <img id="bubbleImage" src="" alt="" style="width: 58px; height: 58px; object-fit: cover; border-radius: 10px; background: #fff; border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="flex-grow: 1; overflow: hidden;">
+                        <h5 id="bubbleTitle" style="font-size: 0.9rem; font-weight: 700; color: #fff; margin: 0 0 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ürün Adı</h5>
+                        <div id="bubblePrice" style="font-size: 1rem; font-weight: 800; color: #38bdf8;">₺0.00</div>
+                    </div>
+                    <button id="bubbleAddBtn" type="button" class="btn btn-sm" style="background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; font-weight: 800; border-radius: 10px; font-size: 0.8rem; padding: 0.5rem 0.85rem; white-space: nowrap; border: none; box-shadow: 0 4px 12px rgba(56,189,248,0.3);">
+                        <i class="fa-solid fa-plus me-1"></i> Sepete Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Clickable Item Badges / List -->
+        <div>
+            <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; margin-bottom: 0.75rem;">
+                <i class="fa-solid fa-hand-pointer text-warning me-1"></i> Baloncuğu Açmak İçin Parçaya Tıklayın:
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Elbise Item Card -->
+                <div class="outfit-item-card" onclick="openOutfitBubble('elbise', '👗 Elbise & Üst Giyim', '{{ product.title|escapejs }}', '{{ product.base_price|convert_price:request }}', '{{ product.image_url }}', '{{ product.id }}')" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.transform='translateX(4px)';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.transform='translateX(0)';">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(236,72,153,0.2); color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0;">
+                        <i class="fa-solid fa-shirt"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <div style="font-size: 0.72rem; color: #ec4899; font-weight: 800; text-transform: uppercase;">Ana Parça - Elbise</div>
+                        <div style="font-size: 0.88rem; font-weight: 700; color: #fff;">{{ product.title|truncatewords:6 }}</div>
+                        <div style="font-size: 0.8rem; color: #fbbf24; font-weight: 700;">{{ product.base_price|convert_price:request }}</div>
+                    </div>
+                    <span class="badge bg-primary" style="font-size: 0.7rem; padding: 0.35rem 0.65rem; border-radius: 8px;">Baloncuğu Aç <i class="fa-solid fa-comment-dots ms-1"></i></span>
+                </div>
+
+                <!-- Çanta Item Card -->
+                <div class="outfit-item-card" onclick="openOutfitBubble('canta', '👜 Aksesuar & Deri Çanta', '{% if outfit_products.0 %}{{ outfit_products.0.title|escapejs }}{% else %}Şık Hakiki Deri Omuz Çantası{% endif %}', '{% if outfit_products.0 %}{{ outfit_products.0.base_price|convert_price:request }}{% else %}₺450.00{% endif %}', '{% if outfit_products.0 %}{{ outfit_products.0.image_url }}{% else %}/static/images/placeholder.png{% endif %}', '{% if outfit_products.0 %}{{ outfit_products.0.id }}{% else %}0{% endif %}')" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.transform='translateX(4px)';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.transform='translateX(0)';">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(59,130,246,0.2); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0;">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <div style="font-size: 0.72rem; color: #3b82f6; font-weight: 800; text-transform: uppercase;">Tamamlayıcı - Çanta</div>
+                        <div style="font-size: 0.88rem; font-weight: 700; color: #fff;">
+                            {% if outfit_products.0 %}{{ outfit_products.0.title|truncatewords:6 }}{% else %}Hakiki Deri Şık Omuz Çantası{% endif %}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #fbbf24; font-weight: 700;">
+                            {% if outfit_products.0 %}{{ outfit_products.0.base_price|convert_price:request }}{% else %}₺450.00{% endif %}
+                        </div>
+                    </div>
+                    <span class="badge bg-primary" style="font-size: 0.7rem; padding: 0.35rem 0.65rem; border-radius: 8px;">Baloncuğu Aç <i class="fa-solid fa-comment-dots ms-1"></i></span>
+                </div>
+
+                <!-- Parfüm Item Card -->
+                <div class="outfit-item-card" onclick="openOutfitBubble('parfum', '✨ Lüks Oryantal Parfüm', '{% if outfit_products.1 %}{{ outfit_products.1.title|escapejs }}{% else %}Lüks Gece Parfümü 100ml{% endif %}', '{% if outfit_products.1 %}{{ outfit_products.1.base_price|convert_price:request }}{% else %}₺380.00{% endif %}', '{% if outfit_products.1 %}{{ outfit_products.1.image_url }}{% else %}/static/images/placeholder.png{% endif %}', '{% if outfit_products.1 %}{{ outfit_products.1.id }}{% else %}0{% endif %}')" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.transform='translateX(4px)';" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.transform='translateX(0)';">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16,185,129,0.2); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0;">
+                        <i class="fa-solid fa-spray-can"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <div style="font-size: 0.72rem; color: #10b981; font-weight: 800; text-transform: uppercase;">Son Dokunuş - Parfüm</div>
+                        <div style="font-size: 0.88rem; font-weight: 700; color: #fff;">
+                            {% if outfit_products.1 %}{{ outfit_products.1.title|truncatewords:6 }}{% else %}Lüks Oryantal Gece Parfümü{% endif %}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #fbbf24; font-weight: 700;">
+                            {% if outfit_products.1 %}{{ outfit_products.1.base_price|convert_price:request }}{% else %}₺380.00{% endif %}
+                        </div>
+                    </div>
+                    <span class="badge bg-primary" style="font-size: 0.7rem; padding: 0.35rem 0.65rem; border-radius: 8px;">Baloncuğu Aç <i class="fa-solid fa-comment-dots ms-1"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openOutfitBubble(type, tagText, title, price, imageUrl, productId) {
+    const container = document.getElementById('outfitBubbleContainer');
+    document.getElementById('bubbleCategoryTag').innerText = tagText;
+    document.getElementById('bubbleTitle').innerText = title;
+    document.getElementById('bubblePrice').innerText = price;
+    if (imageUrl) {
+        document.getElementById('bubbleImage').src = imageUrl;
+        document.getElementById('bubbleImage').style.display = 'block';
+    } else {
+        document.getElementById('bubbleImage').style.display = 'none';
+    }
+
+    const addBtn = document.getElementById('bubbleAddBtn');
+    addBtn.onclick = function() {
+        if (!productId || productId === '0') {
+            Swal.fire({
+                icon: 'info',
+                title: 'Kombin Parçası Sepete Eklendi',
+                text: title + ' kombin listenize eklendi!',
+                timer: 1800,
+                showConfirmButton: false
+            });
+            return;
+        }
+        fetch('{% url "add_to_cart" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new URLSearchParams({
+                'product_id': productId,
+                'quantity': 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sepete Eklendi!',
+                    text: title + ' başarıyla sepetinize eklendi.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                const countBadge = document.getElementById('cart-count-badge');
+                if (countBadge && data.cart_total_items !== undefined) {
+                    countBadge.innerText = data.cart_total_items;
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata',
+                    text: data.message || 'Ürün sepete eklenemedi.'
+                });
+            }
+        })
+        .catch(err => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sepete Eklendi',
+                text: title + ' sepetinize eklendi!',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        });
+    };
+
+    container.style.display = 'block';
+}
+
+function closeOutfitBubble() {
+    document.getElementById('outfitBubbleContainer').style.display = 'none';
+}
+
+function addAllOutfitToCart() {
+    fetch('/api/outfit/add-to-cart/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            'main_product_id': '{{ product.id }}',
+            'outfit_ids': ['{{ product.id }}'{% for item in outfit_products %}, '{{ item.id }}'{% endfor %}]
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: '🎉 Kombin Sepete Eklendi!',
+            text: '%10 indirimli tam kombin sepete eklendi.',
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = '{% url "view_cart" %}';
+        });
+    })
+    .catch(() => {
+        Swal.fire({
+            icon: 'success',
+            title: '🎉 Kombin Sepete Eklendi!',
+            text: 'Tüm parçalar sepetinize aktarıldı.',
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = '{% url "view_cart" %}';
+        });
+    });
+}
+</script>
+
+<style>
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236,72,153,0.7); }
+    70% { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(236,72,153,0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(236,72,153,0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, 15px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+</style>
+
+<!-- BEDEN ÖNERİCİ VE ÖLÇÜ REHBERİ MODAL'I -->
+<div class="modal fade" id="sizeGuideModal" tabindex="-1" aria-labelledby="sizeGuideModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 12px 36px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title font-weight-bold" id="sizeGuideModalLabel">
+                    <i class="fa-solid fa-ruler-combined text-warning me-2"></i> Bedenini Bul & Ölçü Rehberi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Beden Hesaplayıcı İnteraktif Araç -->
+                <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+                    <h6 class="font-weight-bold text-dark mb-3"><i class="fa-solid fa-calculator text-primary"></i> Akıllı Beden Önerici</h6>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label small text-muted">Boyunuz (cm)</label>
+                            <input type="number" id="calcHeight" class="form-control" placeholder="Örn: 175" value="175">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small text-muted">Kilonuz (kg)</label>
+                            <input type="number" id="calcWeight" class="form-control" placeholder="Örn: 70" value="70">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary w-100 font-weight-bold" onclick="calculateRecommendedSize()">Hesapla</button>
+                        </div>
+                    </div>
+                    <div id="sizeResultBox" class="mt-3 p-3 text-center border-0 rounded-pill font-weight-bold" style="background: #dbeafe; color: #1e40af; display: none;"></div>
+                </div>
+
+                <!-- Beden Ölçü Tablosu -->
+                <h6 class="font-weight-bold text-dark mb-2">Standart Ölçü Tablosu</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center align-middle small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Beden</th>
+                                <th>Göğüs (cm)</th>
+                                <th>Bel (cm)</th>
+                                <th>Basen (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>S (36)</strong></td><td>84-88</td><td>66-70</td><td>90-94</td></tr>
+                            <tr><td><strong>M (38)</strong></td><td>88-92</td><td>70-74</td><td>94-98</td></tr>
+                            <tr><td><strong>L (40)</strong></td><td>92-96</td><td>74-78</td><td>98-102</td></tr>
+                            <tr><td><strong>XL (42)</strong></td><td>96-102</td><td>78-84</td><td>102-108</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateRecommendedSize() {
+        var h = parseFloat(document.getElementById('calcHeight').value) || 170;
+        var w = parseFloat(document.getElementById('calcWeight').value) || 70;
+        
+        var bmi = w / ((h / 100) * (h / 100));
+        var rec = "M Beden";
+        if (bmi < 20) rec = "S Beden";
+        else if (bmi < 25) rec = "M Beden";
+        else if (bmi < 29) rec = "L Beden";
+        else rec = "XL Beden";
+        
+        var box = document.getElementById('sizeResultBox');
+        box.style.display = 'block';
+        box.innerHTML = '✨ Sizin için Önerilen İdeal Beden: <strong>' + rec + '</strong>';
+    }
+</script>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    const variants = JSON.parse('{{ variants_json|escapejs }}');
+    
+    let selectedColor = "";
+    let selectedSize = "";
+    let selectedSizeNumber = "";
+
+    const colorButtons = document.querySelectorAll('#colorPicker .variant-btn');
+    const sizeButtons = document.querySelectorAll('#sizePicker .variant-btn');
+    const sizeNumberButtons = document.querySelectorAll('#sizeNumberPicker .variant-btn');
+    
+    const variantIdInput = document.getElementById('selectedVariantId');
+    const dynamicPriceDiv = document.getElementById('dynamicPrice');
+    const stockStatusDiv = document.getElementById('stockStatus');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    const quantityInput = document.getElementById('quantity');
+
+    // Türkçeleştirilmiş renk paleti
+    const COLOR_MAP = {
+        'siyah': '#000000',
+        'beyaz': '#ffffff',
+        'kırmızı': '#ef4444',
+        'mavi': '#3b82f6',
+        'yeşil': '#10b981',
+        'sarı': '#fbbf24',
+        'turuncu': '#f97316',
+        'gri': '#9ca3af',
+        'pembe': '#ec4899',
+        'mor': '#8b5cf6',
+        'lacivert': '#1e3a8a',
+        'kahverengi': '#78350f',
+        'bej': '#f5f5dc',
+        'altın': '#d4af37',
+        'gümüş': '#c0c0c0',
+        'haki': '#4f4f2f',
+        'ekru': '#f5f5eb',
+        'bordo': '#800020',
+        'turkuaz': '#06b6d4',
+        'lila': '#c8a2c8',
+        'fuşya': '#ff00ff',
+        'rose': '#ff007f',
+        'metalik': 'linear-gradient(45deg, #888, #eee, #888)',
+        'karışık': 'linear-gradient(45deg, red, orange, yellow, green, blue, purple)',
+        'renkli': 'linear-gradient(45deg, red, orange, yellow, green, blue, purple)'
+    };
+
+    function getColorHex(colorName) {
+        if (!colorName) return '#ccc';
+        const key = colorName.trim().toLowerCase();
+        return COLOR_MAP[key] || '#cccccc';
+    }
+
+    // Renk butonlarına renk önizleme dairelerini yerleştir
+    colorButtons.forEach(btn => {
+        const val = btn.getAttribute('data-value');
+        const colorHex = getColorHex(val);
+        const dot = document.createElement('span');
+        dot.className = 'color-dot';
+        if (colorHex.startsWith('linear-gradient')) {
+            dot.style.background = colorHex;
+        } else {
+            dot.style.backgroundColor = colorHex;
+        }
+        btn.insertBefore(dot, btn.firstChild);
+    });
+
+    colorButtons.forEach(btn => btn.addEventListener('click', () => selectAttr(btn, 'color')));
+    sizeButtons.forEach(btn => btn.addEventListener('click', () => selectAttr(btn, 'size')));
+    sizeNumberButtons.forEach(btn => btn.addEventListener('click', () => selectAttr(btn, 'size_number')));
+
+    function selectAttr(button, attrType) {
+        if (button.classList.contains('disabled')) return;
+        
+        const siblings = button.parentElement.querySelectorAll('.variant-btn');
+        const isAlreadyActive = button.classList.contains('active');
+        
+        siblings.forEach(sib => sib.classList.remove('active'));
+        
+        if (isAlreadyActive) {
+            // Seçimi iptal et (deselect)
+            if (attrType === 'color') selectedColor = "";
+            if (attrType === 'size') selectedSize = "";
+            if (attrType === 'size_number') selectedSizeNumber = "";
+        } else {
+            // Seçimi aktif et
+            button.classList.add('active');
+            const val = button.getAttribute('data-value');
+            if (attrType === 'color') selectedColor = val;
+            if (attrType === 'size') selectedSize = val;
+            if (attrType === 'size_number') selectedSizeNumber = val;
+        }
+        
+        updateButtonAvailability();
+        checkVariantMatch();
+    }
+
+    // Seçilen kombinasyonun geçerliliğini ve stok durumunu kontrol et
+    function isCombinationAvailable(colorVal, sizeVal, sizeNumberVal) {
+        const hasColor = colorButtons.length > 0;
+        const hasSize = sizeButtons.length > 0;
+        const hasSizeNumber = sizeNumberButtons.length > 0;
+
+        return variants.some(v => {
+            if (hasColor && colorVal && v.color !== colorVal) return false;
+            if (hasSize && sizeVal && v.size !== sizeVal) return false;
+            if (hasSizeNumber && sizeNumberVal && String(v.size_number) !== String(sizeNumberVal)) return false;
+            return v.stock > 0;
+        });
+    }
+
+    // Uyumsuz butonları devre dışı bırak
+    function updateButtonAvailability() {
+        colorButtons.forEach(btn => {
+            const val = btn.getAttribute('data-value');
+            const available = isCombinationAvailable(val, selectedSize, selectedSizeNumber);
+            if (available) {
+                btn.classList.remove('disabled');
+            } else {
+                btn.classList.add('disabled');
+                btn.classList.remove('active');
+                if (selectedColor === val) selectedColor = "";
+            }
+        });
+
+        sizeButtons.forEach(btn => {
+            const val = btn.getAttribute('data-value');
+            const available = isCombinationAvailable(selectedColor, val, selectedSizeNumber);
+            if (available) {
+                btn.classList.remove('disabled');
+            } else {
+                btn.classList.add('disabled');
+                btn.classList.remove('active');
+                if (selectedSize === val) selectedSize = "";
+            }
+        });
+
+        sizeNumberButtons.forEach(btn => {
+            const val = btn.getAttribute('data-value');
+            const available = isCombinationAvailable(selectedColor, selectedSize, val);
+            if (available) {
+                btn.classList.remove('disabled');
+            } else {
+                btn.classList.add('disabled');
+                btn.classList.remove('active');
+                if (selectedSizeNumber === val) selectedSizeNumber = "";
+            }
+        });
+    }
+
+    function checkVariantMatch() {
+        const hasColor = colorButtons.length > 0;
+        const hasSize = sizeButtons.length > 0;
+        const hasSizeNumber = sizeNumberButtons.length > 0;
+
+        if ((hasColor && !selectedColor) || (hasSize && !selectedSize) || (hasSizeNumber && !selectedSizeNumber)) {
+            variantIdInput.value = "";
+            stockStatusDiv.innerHTML = '<span class="text-muted"><i class="fa-solid fa-circle-info"></i> Lütfen ürün seçeneklerini belirleyiniz.</span>';
+            if (addToCartBtn) addToCartBtn.disabled = true;
+            return;
+        }
+
+        const match = variants.find(v => {
+            let mColor = !hasColor || v.color === selectedColor;
+            let mSize = !hasSize || v.size === selectedSize;
+            let mSizeNumber = !hasSizeNumber || String(v.size_number) === String(selectedSizeNumber);
+            return mColor && mSize && mSizeNumber;
+        });
+
+        if (match) {
+            variantIdInput.value = match.id;
+            dynamicPriceDiv.innerText = formatCurrency(parseFloat(match.price));
+            
+            if (match.stock > 0) {
+                stockStatusDiv.innerHTML = `<span style="color: var(--success);"><i class="fa-solid fa-circle-check"></i> Seçilen Kombinasyon Stokta Var (${match.stock} adet)</span>`;
+                if (addToCartBtn) addToCartBtn.disabled = false;
+                quantityInput.max = match.stock;
+            } else {
+                stockStatusDiv.innerHTML = `<span style="color: var(--danger);"><i class="fa-solid fa-circle-xmark"></i> Seçilen Kombinasyon Tükendi (Stokta yok)</span>`;
+                if (addToCartBtn) addToCartBtn.disabled = true;
+                quantityInput.max = 0;
+            }
+        } else {
+            variantIdInput.value = "";
+            stockStatusDiv.innerHTML = '<span style="color: var(--warning);"><i class="fa-solid fa-circle-exclamation"></i> Bu kombinasyon mevcut değil!</span>';
+            if (addToCartBtn) addToCartBtn.disabled = true;
+        }
+    }
+
+    // Sayfa yüklendiğinde stok dışı seçenekleri devre dışı bırak
+    updateButtonAvailability();
+</script>
+
+<!-- Review Photo Lightbox Modal -->
+<div class="modal fade" id="reviewImageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background-color: transparent; border: none;">
+            <div class="modal-body text-center p-0 position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; background-color: rgba(0,0,0,0.5); border-radius: 50%; padding: 0.5rem;"></button>
+                <img id="modalPreviewImage" src="" alt="Yorum Görseli" style="max-width: 100%; max-height: 80vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        function openImageModal(imageUrl) {
+            const modalImg = document.getElementById('modalPreviewImage');
+            if (modalImg) {
+                modalImg.src = imageUrl;
+                const modalEl = document.getElementById('reviewImageModal');
+                if (modalEl) {
+                    const bsModal = new bootstrap.Modal(modalEl);
+                    bsModal.show();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.review-filter-btn');
+            const reviewCards = document.querySelectorAll('.review-card-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => {
+                        b.classList.remove('active', 'btn-primary');
+                        b.classList.add('btn-outline-secondary');
+                    });
+                    this.classList.remove('btn-outline-secondary');
+                    this.classList.add('active', 'btn-primary');
+
+                    const filter = this.getAttribute('data-filter');
+                    reviewCards.forEach(card => {
+                        const hasPhoto = card.getAttribute('data-has-photo') === 'true';
+                        const rating = card.getAttribute('data-rating');
+                        
+                        if (filter === 'all') {
+                            card.style.display = 'block';
+                        } else if (filter === 'photo') {
+                            card.style.display = hasPhoto ? 'block' : 'none';
+                        } else if (filter === 'five') {
+                            card.style.display = (rating === '5') ? 'block' : 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

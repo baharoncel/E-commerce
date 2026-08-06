@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kargo Güncellemesi - Marketplace</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .email-container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .header { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; padding: 25px 20px; text-align: center; }
+        .content { padding: 30px 25px; }
+        .tracking-box { background-color: #f0f9ff; border: 1px dashed #0284c7; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }
+        .footer { background-color: #f8fafc; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1 style="margin:0; font-size:22px;">🚚 Siparişiniz Kargoya Verildi!</h1>
+        </div>
+        <div class="content">
+            <p>Siparişinizdeki <strong>{{ sub_order.seller.store_name }}</strong> mağazasına ait ürünler kargoya teslim edilmiştir.</p>
+
+            <div class="tracking-box">
+                <div style="font-size:12px; color:#64748b; text-transform:uppercase;">Kargo Takip Numarası</div>
+                <div style="font-size:20px; font-weight:bold; color:#0369a1; margin-top:5px;">{{ tracking_number }}</div>
+            </div>
+
+            <p style="font-size:13px; color:#64748b;">Kargonuzun nerede olduğunu öğrenmek için hesabınızdaki Sipariş Takip bölümünü ziyaret edebilirsiniz.</p>
+        </div>
+        <div class="footer">&copy; 2026 PazarYeri Platformu</div>
+    </div>
+</body>
+</html>
