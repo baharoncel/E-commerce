@@ -198,18 +198,18 @@ def store_index(request):
     flash_sales = FlashSale.objects.filter(is_active=True, end_time__gt=timezone.now()).select_related('product', 'product__seller')
 
     bubble_definitions = [
-        {'name': 'Tişört', 'image': '/media/products/tshirt_blue_plain.png', 'query': 'Tişört'},
-        {'name': 'Gömlek', 'image': '/media/products/shirt_white_close_real.png', 'query': 'Gömlek'},
-        {'name': 'Bluz', 'image': '/media/products/blouse_turquoise.png', 'query': 'Bluz'},
-        {'name': 'Pantolon', 'image': '/media/products/pants_black_jean_v2.png', 'query': 'Pantolon'},
-        {'name': 'Jean (Kot)', 'image': '/media/products/jean_mom_fit_light.png', 'query': 'Jean'},
-        {'name': 'Etek', 'image': '/media/products/skirt_leopard.png', 'query': 'Etek'},
-        {'name': 'Elbise', 'image': '/media/products/dress_emerald_satin.png', 'query': 'Elbise'},
-        {'name': 'Mont', 'image': '/media/products/coat_black_puffer.png', 'query': 'Mont'},
-        {'name': 'Çanta', 'image': '/media/products/bag_shoulder_beige_set.png', 'query': 'Çanta'},
-        {'name': 'Saat', 'image': '/media/products/accessory_watch_gold.png', 'query': 'Saat'},
-        {'name': 'Gözlük', 'image': '/media/products/accessory_sunglasses_aviator.png', 'query': 'Gözlük'},
-        {'name': 'Parfüm', 'image': '/media/products/perfume.png', 'query': 'Parfüm'},
+        {'name': 'Tişört', 'image': 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300&q=80', 'query': 'Tişört'},
+        {'name': 'Gömlek', 'image': 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=300&q=80', 'query': 'Gömlek'},
+        {'name': 'Bluz', 'image': 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=300&q=80', 'query': 'Bluz'},
+        {'name': 'Pantolon', 'image': 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&q=80', 'query': 'Pantolon'},
+        {'name': 'Jean (Kot)', 'image': 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&q=80', 'query': 'Jean'},
+        {'name': 'Etek', 'image': 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=300&q=80', 'query': 'Etek'},
+        {'name': 'Elbise', 'image': 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&q=80', 'query': 'Elbise'},
+        {'name': 'Mont', 'image': 'https://images.unsplash.com/photo-1544923246-77307dd654cb?w=300&q=80', 'query': 'Mont'},
+        {'name': 'Çanta', 'image': 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&q=80', 'query': 'Çanta'},
+        {'name': 'Saat', 'image': 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=300&q=80', 'query': 'Saat'},
+        {'name': 'Gözlük', 'image': 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=300&q=80', 'query': 'Gözlük'},
+        {'name': 'Parfüm', 'image': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=300&q=80', 'query': 'Parfüm'},
     ]
 
     category_bubbles = []
