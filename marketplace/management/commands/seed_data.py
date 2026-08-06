@@ -80,16 +80,44 @@ class Command(BaseCommand):
         customer2.save()
         self.stdout.write(self.style.SUCCESS("  [+] Test müşterileri oluşturuldu: ahmet_yilmaz, ayse_kaya (şifre: customer123)"))
 
-        # 2. KATEGORİLER
+        # 2. KATEGORİLER (Tam Ağaç)
+        cat_giyim, _ = Category.objects.get_or_create(name="Giyim & Moda")
+        cat_kadin, _ = Category.objects.get_or_create(name="Kadın Giyim", parent=cat_giyim)
+        cat_erkek, _ = Category.objects.get_or_create(name="Erkek Giyim", parent=cat_giyim)
+        cat_tshirt, _ = Category.objects.get_or_create(name="Tişört", parent=cat_giyim)
+        cat_gomlek, _ = Category.objects.get_or_create(name="Gömlek", parent=cat_giyim)
+        cat_bluz, _ = Category.objects.get_or_create(name="Bluz", parent=cat_giyim)
+        cat_pantolon, _ = Category.objects.get_or_create(name="Pantolon", parent=cat_giyim)
+        cat_jean, _ = Category.objects.get_or_create(name="Jean (Kot)", parent=cat_giyim)
+        cat_etek, _ = Category.objects.get_or_create(name="Etek", parent=cat_giyim)
+        cat_elbise, _ = Category.objects.get_or_create(name="Elbise", parent=cat_giyim)
+
+        cat_cocuk, _ = Category.objects.get_or_create(name="Çocuk & Bebek")
+        cat_bebek_giyim, _ = Category.objects.get_or_create(name="Bebek Giyim", parent=cat_cocuk)
+        cat_bebek_ayakkabi, _ = Category.objects.get_or_create(name="Bebek Ayakkabı", parent=cat_cocuk)
+
+        cat_ayakkabi, _ = Category.objects.get_or_create(name="Ayakkabı")
+        cat_sneaker, _ = Category.objects.get_or_create(name="Sneaker", parent=cat_ayakkabi)
+
+        cat_aksesuar, _ = Category.objects.get_or_create(name="Aksesuar & Saat")
+        cat_saat, _ = Category.objects.get_or_create(name="Saat", parent=cat_aksesuar)
+        cat_canta, _ = Category.objects.get_or_create(name="Çanta", parent=cat_aksesuar)
+        cat_gozluk, _ = Category.objects.get_or_create(name="Güneş Gözlüğü", parent=cat_aksesuar)
+
+        cat_taki, _ = Category.objects.get_or_create(name="Takılar")
+        cat_erkek_taki, _ = Category.objects.get_or_create(name="Erkek Takı", parent=cat_taki)
+        cat_kadin_taki, _ = Category.objects.get_or_create(name="Kadın Takı", parent=cat_taki)
+
+        cat_kozmetik, _ = Category.objects.get_or_create(name="Kozmetik & Makyaj")
+        cat_parfum, _ = Category.objects.get_or_create(name="Parfüm", parent=cat_kozmetik)
+        cat_cilt, _ = Category.objects.get_or_create(name="Cilt Bakımı", parent=cat_kozmetik)
+        cat_sac, _ = Category.objects.get_or_create(name="Saç Bakımı", parent=cat_kozmetik)
+
         cat_elek, _ = Category.objects.get_or_create(name="Elektronik")
         cat_phone, _ = Category.objects.get_or_create(name="Akıllı Telefonlar", parent=cat_elek)
         cat_laptop, _ = Category.objects.get_or_create(name="Dizüstü Bilgisayarlar", parent=cat_elek)
 
-        cat_giyim, _ = Category.objects.get_or_create(name="Giyim & Moda")
-        cat_kadin, _ = Category.objects.get_or_create(name="Kadın Giyim", parent=cat_giyim)
-        cat_erkek, _ = Category.objects.get_or_create(name="Erkek Giyim", parent=cat_giyim)
-
-        self.stdout.write(self.style.SUCCESS("  [+] Kategoriler ve alt kategoriler oluşturuldu."))
+        self.stdout.write(self.style.SUCCESS("  [+] Tüm ana ve alt kategoriler eksiksiz oluşturuldu."))
 
         # 3. ÜRÜNLER & VARYASYONLAR
         # Ürün 1 - Laptop
@@ -107,6 +135,51 @@ class Command(BaseCommand):
         )
         if p1_created:
             ProductVariant.objects.create(product=p1, color="Uzay Grisi", size="15 Inç", price=Decimal("34999.00"), stock=15, sku="LAP-M3-GRAY")
+
+        # Ürün 2 - Tişört
+        p_tshirt, _ = Product.objects.get_or_create(
+            title="Baskılı Premium Pamuk Erkek Tişört",
+            defaults={
+                "seller": seller_profile2,
+                "category": cat_tshirt,
+                "description": "%100 pamuklu, nefes alabilir kumaş ve modern baskılı tişört.",
+                "base_price": Decimal("299.00"),
+                "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800",
+                "average_rating": Decimal("4.90"),
+                "review_count": 5
+            }
+        )
+        ProductVariant.objects.get_or_create(product=p_tshirt, color="Mavi", size="M", defaults={"price": Decimal("299.00"), "stock": 20, "sku": "TSH-BLU-M"})
+
+        # Ürün 3 - Gömlek
+        p_gomlek, _ = Product.objects.get_or_create(
+            title="Keten Slim Fit Beyaz Kadın Gömlek",
+            defaults={
+                "seller": seller_profile2,
+                "category": cat_gomlek,
+                "description": "Doğal keten kumaş, serin tutan şık kesim beyaz gömlek.",
+                "base_price": Decimal("450.00"),
+                "image": "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800",
+                "average_rating": Decimal("4.70"),
+                "review_count": 3
+            }
+        )
+        ProductVariant.objects.get_or_create(product=p_gomlek, color="Beyaz", size="S", defaults={"price": Decimal("450.00"), "stock": 15, "sku": "GML-WHT-S"})
+
+        # Ürün 4 - Parfüm
+        p_parfum, _ = Product.objects.get_or_create(
+            title="Loris K-120 Frequence Lüks Parfüm",
+            defaults={
+                "seller": seller_profile2,
+                "category": cat_parfum,
+                "description": "Kalıcı ve büyüleyici esans, gün boyu taze kokusuyla dikkat çeken lüks parfüm.",
+                "base_price": Decimal("349.00"),
+                "image": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800",
+                "average_rating": Decimal("4.95"),
+                "review_count": 8
+            }
+        )
+        ProductVariant.objects.get_or_create(product=p_parfum, color="Altın", defaults={"price": Decimal("349.00"), "stock": 50, "sku": "PRF-LORIS-120"})
             ProductVariant.objects.create(product=p1, color="Gümüş", size="15 Inç", price=Decimal("35999.00"), stock=8, sku="LAP-M3-SILVER")
 
         # Ürün 2 - Kulaklık
