@@ -1288,7 +1288,7 @@
         function updateVariantSelection() {
             const match = qvProductVariants.find(v => {
                 const colorMatch = !qvColorsContainer.style.display || qvColorsContainer.style.display === 'none' || v.color === qvSelectedColor;
-                const sizeMatch = !qvSizesContainer.style.display || qvSizesContainer.style.display === 'none' || (v.size || v.size_number).toString() === qvSelectedSize;
+                const sizeMatch = !qvSizesContainer.style.display || qvSizesContainer.style.display === 'none' || (v.size || v.size_number || '').toString() === qvSelectedSize;
                 return colorMatch && sizeMatch;
             });
 
