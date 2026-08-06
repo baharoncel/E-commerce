@@ -128,7 +128,7 @@ class Product(models.Model):
             if self.image.name.startswith('http://') or self.image.name.startswith('https://'):
                 return self.image.name
             return self.image.url
-        return ''
+        return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80'
 
     def get_srcset(self):
         if self.responsive_images:
