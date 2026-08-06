@@ -35,7 +35,7 @@ env/
 # *.sqlite3
 
 # Media and uploads
-media/
+# media/
 static_collected/
 
 # IDE files
