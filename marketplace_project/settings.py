@@ -191,10 +191,7 @@ except Exception:
         }
     }
 
-# Merkezi Loglama Yapılandırması (Rotating File Logger)
-LOGS_DIR = BASE_DIR / 'logs'
-os.makedirs(LOGS_DIR, exist_ok=True)
-
+# Merkezi Loglama Yapılandırması (Cloud Safe Console Logger)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -208,15 +205,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGS_DIR / 'pazaryeri.log',
-            'maxBytes': 10 * 1024 * 1024,  # 10 MB
-            'backupCount': 5,
-            'formatter': 'verbose',
-            'encoding': 'utf-8',
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -225,12 +213,12 @@ LOGGING = {
     },
     'loggers': {
         'pazaryeri': {
-            'handlers': ['file', 'console'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'WARNING',
             'propagate': True,
         },
