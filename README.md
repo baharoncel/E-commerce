@@ -72,7 +72,7 @@ Proje bilgisayarınızda hazır ve aktiftir:
 ```bash
 python manage.py runserver
 ```
-Uygulamaya tarayıcınızdan **`http://127.0.0.1:8000/`** adresinden erişebilirsiniz.
+Uygulamaya yerel ortamda **`http://127.0.0.1:8000/`** veya canlı yayında **[https://e-commerce-dkb0.onrender.com/](https://e-commerce-dkb0.onrender.com/)** adresinden erişebilirsiniz.
 
 ---
 
