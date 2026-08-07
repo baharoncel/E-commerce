@@ -18,14 +18,16 @@ class Command(BaseCommand):
 
         # 1. KULLANICILAR
         # Superadmin
-        admin, created = User.objects.get_or_create(
+        admin, _ = User.objects.get_or_create(
             username="admin",
             defaults={"email": "admin@marketplace.com", "role": "SUPERADMIN", "is_staff": True, "is_superuser": True}
         )
-        if created:
-            admin.set_password("admin123")
-            admin.save()
-            self.stdout.write(self.style.SUCCESS("  [+] Superadmin oluşturuldu: admin / admin123"))
+        admin.set_password("admin123")
+        admin.is_staff = True
+        admin.is_superuser = True
+        admin.role = "SUPERADMIN"
+        admin.save()
+        self.stdout.write(self.style.SUCCESS("  [+] Superadmin hazır: admin / admin123"))
 
         # Satıcı 1
         seller_user1, _ = User.objects.get_or_create(
@@ -175,12 +177,9 @@ class Command(BaseCommand):
                 "description": "Kalıcı ve büyüleyici esans, gün boyu taze kokusuyla dikkat çeken lüks parfüm.",
                 "base_price": Decimal("349.00"),
                 "image": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800",
-                "average_rating": Decimal("4.95"),
-                "review_count": 8
             }
         )
         ProductVariant.objects.get_or_create(product=p_parfum, color="Altın", defaults={"price": Decimal("349.00"), "stock": 50, "sku": "PRF-LORIS-120"})
-            ProductVariant.objects.create(product=p1, color="Gümüş", size="15 Inç", price=Decimal("35999.00"), stock=8, sku="LAP-M3-SILVER")
 
         # Ürün 2 - Kulaklık
         p2, p2_created = Product.objects.get_or_create(
