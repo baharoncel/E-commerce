@@ -4,6 +4,8 @@ set -o errexit
 
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py seed_data || true
 python restore_real_user_images.py
 python manage.py collectstatic --no-input
+
 
