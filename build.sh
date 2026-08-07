@@ -3,5 +3,7 @@
 set -o errexit
 
 pip install -r requirements.txt
-python manage.py collectstatic --no-input
 python manage.py migrate
+python restore_real_user_images.py
+python manage.py collectstatic --no-input
+

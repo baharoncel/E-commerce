@@ -5,8 +5,24 @@
 
 {% block content %}
 <div style="margin-bottom: 2rem;">
-    <h1 class="text-gradient"><i class="fa-solid fa-user-gear"></i> Hesabım & Kullanıcı Hub'ı</h1>
-    <p class="text-muted">Siparişlerinizi yönetin, iade süreçlerini takip edin, satıcılarla canlı mesajlaşın ve sistem bildirimlerinizi görün.</p>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="text-gradient m-0"><i class="fa-solid fa-user-gear"></i> Hesabım & Kullanıcı Hub'ı</h1>
+            <p class="text-muted mb-0">Siparişlerinizi yönetin, iade süreçlerini takip edin, satıcılarla canlı mesajlaşın ve arayüz temanızı kişiselleştirin.</p>
+        </div>
+        
+        <!-- Hesabım Renk Vurgu Baloncukları Kartı -->
+        <div class="p-2 px-3 rounded-4 border shadow-sm bg-white d-flex align-items-center gap-3" style="background: var(--bg-card) !important; border-color: var(--border-color) !important;">
+            <span class="small fw-bold text-muted"><i class="fa-solid fa-palette text-warning me-1"></i> Vurgu Rengi:</span>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" onclick="setAccentColor('orange', '#f27a1a', 'linear-gradient(135deg, #f27a1a, #ff8c2e)', event)" class="btn p-0 rounded-circle color-bubble-btn" style="width: 32px; height: 32px; background: radial-gradient(circle at 35% 35%, #ff9e43, #f27a1a); border: 2px solid #fff; box-shadow: 0 3px 10px rgba(242,122,26,0.4);" title="Pazar Turuncusu"></button>
+                <button type="button" onclick="setAccentColor('indigo', '#6366f1', 'linear-gradient(135deg, #6366f1, #4338ca)', event)" class="btn p-0 rounded-circle color-bubble-btn" style="width: 32px; height: 32px; background: radial-gradient(circle at 35% 35%, #818cf8, #6366f1); border: 2px solid #fff; box-shadow: 0 3px 10px rgba(99,102,241,0.4);" title="Indigo Mor"></button>
+                <button type="button" onclick="setAccentColor('emerald', '#10b981', 'linear-gradient(135deg, #10b981, #059669)', event)" class="btn p-0 rounded-circle color-bubble-btn" style="width: 32px; height: 32px; background: radial-gradient(circle at 35% 35%, #34d399, #10b981); border: 2px solid #fff; box-shadow: 0 3px 10px rgba(16,185,129,0.4);" title="Zümrüt Yeşili"></button>
+                <button type="button" onclick="setAccentColor('rose', '#f43f5e', 'linear-gradient(135deg, #f43f5e, #e11d48)', event)" class="btn p-0 rounded-circle color-bubble-btn" style="width: 32px; height: 32px; background: radial-gradient(circle at 35% 35%, #fb7185, #f43f5e); border: 2px solid #fff; box-shadow: 0 3px 10px rgba(244,63,94,0.4);" title="Mercan Gül"></button>
+                <button type="button" onclick="setAccentColor('ocean', '#0284c7', 'linear-gradient(135deg, #0284c7, #0369a1)', event)" class="btn p-0 rounded-circle color-bubble-btn" style="width: 32px; height: 32px; background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7); border: 2px solid #fff; box-shadow: 0 3px 10px rgba(2,132,199,0.4);" title="Okyanus Mavi"></button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="grid-sidebar">
